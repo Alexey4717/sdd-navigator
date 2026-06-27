@@ -1,0 +1,109 @@
+# Dashboard requirements — SDD Navigator Dashboard
+# 17 SCD requirements describing THIS dashboard application (not the Rust API).
+# Each requirement has a verifiable MUST/SHOULD directive.
+
+requirements:
+  - id: SCD-API-001
+    title: Typed API client matching OpenAPI schema
+    description: >
+      Dashboard MUST expose a typed API client derived from spec/sdd-coverage-api.yaml
+      using generated types only; no `any` types are permitted anywhere in lib/api/.
+
+  - id: SCD-API-002
+    title: Mock and live data provider modes
+    description: >
+      Dashboard MUST operate in mock mode (reading data/*.json) by default and switch to
+      live mode (fetching NEXT_PUBLIC_API_URL) when that environment variable is set.
+
+  - id: SCD-API-003
+    title: Typed error handling without throw
+    description: >
+      All API calls MUST return a typed Result<T, ApiError> value; no exceptions SHOULD be
+      thrown for expected failure conditions (network, 404, malformed JSON).
+
+  - id: SCD-SUM-001
+    title: Summary panel with stats and orphan warnings
+    description: >
+      Dashboard MUST render a SummaryPanel showing: requirement totals by type and status
+      with visual bars, coverage percentage with a progress indicator, orphan annotation and
+      task warnings, and the lastScanAt timestamp.
+
+  - id: SCD-TBL-001
+    title: Requirements table with ID/type/title/status/updatedAt columns
+    description: >
+      Dashboard MUST render a requirements table with columns: ID, type, title, status,
+      and updatedAt; each row MUST link to the requirement detail page.
+
+  - id: SCD-SORT-001
+    title: Column sorting with aria-sort
+    description: >
+      Requirements table MUST support ascending and descending sorting by id and updatedAt;
+      active sort column MUST carry an aria-sort attribute for screen-reader accessibility.
+
+  - id: SCD-FLT-001
+    title: Multi-select filter chips by type and status
+    description: >
+      Dashboard MUST provide FilterChips allowing multi-select filtering by RequirementType
+      (FR, AR) and CoverageStatus (covered, partial, missing).
+
+  - id: SCD-FLT-002
+    title: Filters synced to URL query params
+    description: >
+      Active filters and sort order MUST be reflected in URL query parameters so that the
+      current view is shareable via a URL (e.g. ?type=FR&status=missing&sort=updatedAt&order=desc).
+
+  - id: SCD-FLT-003
+    title: Empty state when no results match filters
+    description: >
+      When active filters return zero requirements, dashboard MUST display a visible empty-state
+      message and SHOULD offer a clear-filters action.
+
+  - id: SCD-DET-001
+    title: Requirement detail with annotations, tasks, and coverage label
+    description: >
+      Dashboard MUST render a detail page for each requirement showing all fields, linked
+      annotations with code snippets, linked tasks, and a human-readable coverage label
+      (Fully covered / Needs tests / Not implemented).
+
+  - id: SCD-TASK-001
+    title: Tasks panel with status filter and orphan highlighting
+    description: >
+      Dashboard MUST render a TasksPanel listing all tasks filterable by status; tasks whose
+      requirementId is not in requirements.yaml MUST be visually highlighted as orphans.
+
+  - id: SCD-ORPH-001
+    title: Collapsible orphan panel for annotations and tasks
+    description: >
+      Dashboard MUST provide a collapsible OrphanPanel (using <details>) listing orphan
+      annotations and orphan tasks separately; orphan detection logic MUST come from lib/coverage.ts.
+
+  - id: SCD-A11Y-001
+    title: Semantic HTML, keyboard navigation, WCAG AA contrast
+    description: >
+      Dashboard MUST use semantic HTML elements throughout; table MUST be keyboard-navigable;
+      all text/background color pairs MUST meet WCAG 2.1 AA contrast ratio (≥4.5:1 normal text).
+
+  - id: SCD-STATE-001
+    title: Loading and error states in UI
+    description: >
+      Dashboard MUST display a loading indicator while data is being fetched and MUST display
+      a user-visible error message when a data provider call returns an error Result.
+
+  - id: SCD-THEME-001
+    title: Dark/light theme toggle with persistence
+    description: >
+      Dashboard MUST provide a ThemeToggle that switches between dark and light themes; the
+      chosen theme MUST be persisted in localStorage and SHOULD default to the OS preference
+      (prefers-color-scheme) on first visit without causing FOUC.
+
+  - id: SCD-RESP-001
+    title: Responsive layout — table on desktop, cards on mobile
+    description: >
+      Requirements list MUST render as a sortable table on desktop (≥768 px) and as a
+      stacked card list on mobile (<768 px); layout switch MUST be CSS-only (no JS breakpoint).
+
+  - id: SCD-DEPLOY-001
+    title: Deployed to Vercel with live URL in README
+    description: >
+      Dashboard MUST be deployed to Vercel and the production URL MUST appear in README.md;
+      deployment SHOULD be reproducible via `vercel --prod` from the repository root.

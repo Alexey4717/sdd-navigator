@@ -14,6 +14,7 @@
 |---|---|---|
 | SA0 | claude-4.6-sonnet-medium-thinking | Cursor tooling setup (rules, hooks, subagents, docs) |
 | SA1 | composer-2.5-fast | Next.js scaffold + Vitest/Prettier/tooling config; verify green |
+| SA2 | claude-4.6-sonnet-medium-thinking | Spec artifacts + mock data (requirements.yaml, data/*.json, lib/api/types.ts) |
 
 ## 2. Conversation Log
 
@@ -23,6 +24,7 @@
 |---|---|---|---|---|
 | SA0 | Cursor tooling setup | Create .cursor/rules/*.mdc, hooks.json + scripts, .cursor/agents/*.md, AGENTS.md, PROCESS.md skeleton, docs/dev-log.md | All files created as specified | — |
 | SA1 | Scaffolding & config (continued) | Finish SA1 configs without reinstall; user set package versions/PM manually | All config files accepted; lint script fixed for Next 16; dev deps installed; verify green | — |
+| SA2 | Spec artifacts and data | Download spec/sdd-coverage-api.yaml; author requirements.yaml (17 SCD IDs); create data/*.json (8 req/16 ann/6 tasks) with DRY-consistent stats; run gen:types; create lib/api/types.ts | All files accepted; DRY-consistency verified (all 16 metrics match); gen:types ran; typecheck green | — |
 
 ## 3. Timeline
 
@@ -32,6 +34,7 @@
 |---|---|---|---|
 | SA0 | 2026-06-27 ~16:12 local (UTC+10) | 2026-06-27 ~16:30 local (UTC+10) | Cursor tooling: rules, hooks, subagents, process docs |
 | SA1 | 2026-06-27 ~16:31 local (UTC+10) | 2026-06-27 ~18:05 local (UTC+10) | User installed Next/ESLint/TS; dev deps added; `pnpm verify` green |
+| SA2 | 2026-06-27 ~17:50 local (UTC+10) | 2026-06-27 ~18:20 local (UTC+10) | spec/; requirements.yaml; data/*.json; gen:types; lib/api/types.ts; typecheck green |
 
 ## 4. Key Decisions
 
@@ -41,6 +44,8 @@
 - **SA0**: Hook scripts written as `.mjs` (ES modules invoked via `node`) for Windows cross-platform compatibility.
 - **SA0**: Hook scripts fail open when `package.json` or `pnpm` are absent — prevents blocking agent work before SA1 scaffolding.
 - **SA0**: `gate.mjs` (subagentStop) runs only `typecheck` + `check-coverage` for speed; full `verify` is the developer's responsibility pre-commit.
+- **SA2**: FR-API-003 status set to `covered` (not `partial` as in spec example) to achieve exactly 5 covered requirements (62.5% coverage) per the plan's DRY-consistency spec.
+- **SA2**: `lib/api/types.ts` uses re-export pattern (`export type X = components['schemas']['X']`) — no hand-rolled types, single source of truth remains `spec/sdd-coverage-api.yaml`.
 
 ## 5. What the Developer Controlled
 

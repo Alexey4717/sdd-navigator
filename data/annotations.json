@@ -1,0 +1,114 @@
+[
+  {
+    "file": "src/parser.rs",
+    "line": 15,
+    "reqId": "FR-SCAN-001",
+    "type": "impl",
+    "snippet": "/// @req FR-SCAN-001\nfn parse_requirements(path: &Path) -> Result<Vec<Requirement>> {\n    let content = fs::read_to_string(path)?;"
+  },
+  {
+    "file": "src/parser.rs",
+    "line": 58,
+    "reqId": "FR-SCAN-001",
+    "type": "impl",
+    "snippet": "/// @req FR-SCAN-001\nfn validate_yaml_schema(doc: &Value) -> Result<()> {\n    doc.get(\"id\").ok_or(Error::MissingField(\"id\"))?"
+  },
+  {
+    "file": "tests/parser_test.rs",
+    "line": 12,
+    "reqId": "FR-SCAN-001",
+    "type": "test",
+    "snippet": "/// @req FR-SCAN-001\n#[test]\nfn test_parse_valid_yaml() {"
+  },
+  {
+    "file": "src/scanner.rs",
+    "line": 22,
+    "reqId": "FR-SCAN-002",
+    "type": "impl",
+    "snippet": "/// @req FR-SCAN-002\nfn scan_source_files(root: &Path) -> Result<Vec<Annotation>> {\n    let walker = WalkDir::new(root).follow_links(false);"
+  },
+  {
+    "file": "tests/scanner_test.rs",
+    "line": 8,
+    "reqId": "FR-SCAN-002",
+    "type": "test",
+    "snippet": "/// @req FR-SCAN-002\n#[test]\nfn test_scan_rust_file() {"
+  },
+  {
+    "file": "src/scanner.rs",
+    "line": 78,
+    "reqId": "FR-SCAN-003",
+    "type": "impl",
+    "snippet": "/// @req FR-SCAN-003\nfn detect_orphan_annotations(anns: &[Annotation], reqs: &[Requirement]) -> Vec<Annotation> {\n    let req_ids: HashSet<_> = reqs.iter().map(|r| &r.id).collect();"
+  },
+  {
+    "file": "tests/scanner_test.rs",
+    "line": 45,
+    "reqId": "FR-SCAN-003",
+    "type": "test",
+    "snippet": "/// @req FR-SCAN-003\n#[test]\nfn test_orphan_detection() {"
+  },
+  {
+    "file": "src/api/requirements.rs",
+    "line": 10,
+    "reqId": "FR-API-001",
+    "type": "impl",
+    "snippet": "/// @req FR-API-001\nasync fn list_requirements(query: Query<ReqFilter>) -> Json<Vec<Requirement>> {\n    let filtered = apply_filters(state.requirements(), query.0);"
+  },
+  {
+    "file": "src/api/requirements.rs",
+    "line": 35,
+    "reqId": "FR-API-001",
+    "type": "impl",
+    "snippet": "/// @req FR-API-001\nfn apply_filters(reqs: Vec<Requirement>, f: ReqFilter) -> Vec<Requirement> {\n    reqs.into_iter().filter(|r| f.matches(r)).collect()"
+  },
+  {
+    "file": "tests/api_test.rs",
+    "line": 20,
+    "reqId": "FR-API-001",
+    "type": "test",
+    "snippet": "/// @req FR-API-001\n#[tokio::test]\nasync fn test_list_with_status_filter() {"
+  },
+  {
+    "file": "src/api/requirements.rs",
+    "line": 62,
+    "reqId": "FR-API-003",
+    "type": "impl",
+    "snippet": "/// @req FR-API-003\nfn full_text_search<'a>(reqs: &'a [Requirement], q: &str) -> Vec<&'a Requirement> {\n    reqs.iter().filter(|r| r.id.contains(q) || r.title.contains(q)).collect()"
+  },
+  {
+    "file": "tests/api_test.rs",
+    "line": 50,
+    "reqId": "FR-API-003",
+    "type": "test",
+    "snippet": "/// @req FR-API-003\n#[tokio::test]\nasync fn test_search_by_title() {"
+  },
+  {
+    "file": "src/api/requirements.rs",
+    "line": 45,
+    "reqId": "FR-API-002",
+    "type": "impl",
+    "snippet": "/// @req FR-API-002\nasync fn get_requirement(path: Path<String>) -> Json<RequirementDetail> {\n    let req = state.find_requirement(&path.0).ok_or(AppError::NotFound)?"
+  },
+  {
+    "file": "src/api/requirements.rs",
+    "line": 90,
+    "reqId": "FR-API-002",
+    "type": "impl",
+    "snippet": "/// @req FR-API-002\nfn build_requirement_detail(req: Requirement, anns: Vec<Annotation>, tasks: Vec<Task>) -> RequirementDetail {\n    RequirementDetail { req, annotations: anns, tasks }"
+  },
+  {
+    "file": "src/api/legacy.rs",
+    "line": 5,
+    "reqId": "FR-LEGACY-001",
+    "type": "impl",
+    "snippet": "/// @req FR-LEGACY-001\nfn deprecated_handler() {\n    // TODO: remove this endpoint in v4"
+  },
+  {
+    "file": "tests/api_test.rs",
+    "line": 88,
+    "reqId": "FR-API-099",
+    "type": "test",
+    "snippet": "/// @req FR-API-099\n#[tokio::test]\nasync fn test_removed_endpoint() {"
+  }
+]
