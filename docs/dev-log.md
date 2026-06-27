@@ -745,3 +745,72 @@ Table row links still append `currentQuery(state)` → `/requirements/{id}?type=
 No `git` commit made (left for user review).
 
 ---
+
+## SA7 — Tasks panel + Orphan panel
+
+**Date**: 2026-06-27
+
+### Prompt (summary)
+
+Implement `TasksPanel` (status filter, orphan task highlighting, responsive table/cards) and collapsible `OrphanPanel` (annotation + task orphans). Wire into `app/page.tsx` with parallel fetch. Reuse `lib/coverage.ts` orphan helpers. SRP subcomponents per SA6 pattern. Requirements: SCD-TASK-001, SCD-ORPH-001, SCD-A11Y-001, SCD-RESP-001.
+
+### Component tree
+
+```
+app/page.tsx (RSC — parallel fetch stats/requirements/tasks/annotations)
+├── SummaryPanel
+├── FilterChips
+├── RequirementsTable
+├── TasksPanel (RSC)
+│   └── TasksPanelBody (client — filter state)
+│       ├── TaskStatusFilter (client — multi-select chips)
+│       └── TasksTable (table + orphan row highlight)
+└── OrphanPanel (RSC — <details>/<summary>)
+    ├── AnnotationOrphansList
+    └── TaskOrphansList
+```
+
+### Data flow
+
+1. `page.tsx` — `Promise.all([getStats(), listRequirements(), listTasks(), listAnnotations()])`; `DataError` on any failure.
+2. Passes `tasks.data` + `requirements.data` to `TasksPanel`; full lists + requirements to `OrphanPanel`.
+3. Orphan detection — `findOrphanTasks` / `findOrphanAnnotations` from `lib/coverage.ts` (not duplicated in components or via API `orphans: true` filter).
+4. Task status filter — client-side multi-select in `TasksPanelBody` calling `filterTasks(tasks, requirements, { status })`. **Not URL-synced** — requirements table already owns shareable query params; adding `taskStatus` would complicate the home URL for a secondary panel (documented decision).
+
+### Orphan highlighting
+
+- Tasks panel: `findOrphanTasks` → `Set` of orphan IDs passed to `TasksTable`; orphan rows get `--warning` background + inset border; unknown `requirementId` shown without link + "Unknown requirement" hint.
+- Orphan panel: collapsible `<details>` (closed by default) with total badge; subsections list 2 annotation orphans (FR-LEGACY-001, FR-API-099) and 1 task orphan (TASK-006 → FR-EXPORT-001).
+
+### Status filter approach
+
+Client-side `TaskStatusFilter` reuses `Chip` from FilterChips; local React state (open / in_progress / done multi-select). Filtering via shared `filterTasks` from `lib/coverage.ts`.
+
+### `@req` mapping
+
+| ID            | Where                                                                                      |
+| ------------- | ------------------------------------------------------------------------------------------ |
+| SCD-TASK-001  | `page.tsx`, `TasksPanel`, `TasksPanelBody`, `TaskStatusFilter`, `TasksTable`               |
+| SCD-ORPH-001  | `page.tsx`, `OrphanPanel`, `AnnotationOrphansList`, `TaskOrphansList`                      |
+| SCD-A11Y-001  | Semantic sections/tables, `aria-pressed` chips, `<details>` keyboard toggle, status labels |
+| SCD-RESP-001  | CSS-only desktop table / mobile cards in `TasksTable` (same pattern as RequirementsTable)  |
+| SCD-STATE-001 | `page.tsx` — extended `DataError` handling for tasks/annotations fetch                     |
+
+### Build fix (pre-existing)
+
+`app/requirements/[id]/page.tsx` — `export const revalidate = DATA_REVALIDATE_SECONDS` broke Next.js 16 build ("Invalid segment configuration export"); reverted to literal `300` (live provider still uses `DATA_REVALIDATE_SECONDS` from `lib/revalidate.ts`).
+
+### Verification
+
+| Check                     | Result                                                  |
+| ------------------------- | ------------------------------------------------------- |
+| Home page tasks count     | 6 (TASK-001..006)                                       |
+| TASK-006 orphan highlight | FR-EXPORT-001 + warning styling + "Unknown requirement" |
+| OrphanPanel badge         | 3 (2 annotation + 1 task)                               |
+| `pnpm typecheck`          | PASS                                                    |
+| `pnpm lint`               | PASS (3 pre-existing hook warnings)                     |
+| `pnpm build`              | PASS                                                    |
+
+No `git` commit made (left for user review).
+
+---

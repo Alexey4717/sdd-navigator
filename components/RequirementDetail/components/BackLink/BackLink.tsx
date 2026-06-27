@@ -3,13 +3,26 @@
 // @req SCD-A11Y-001
 // @req SCD-FLT-002
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSyncExternalStore } from 'react';
 import {
   currentQuery,
   parseTableState,
   rawSearchParamsFromUrl,
 } from '@/lib/url-filters';
 import styles from './BackLink.module.css';
+
+function subscribeToSearch(onStoreChange: () => void): () => void {
+  window.addEventListener('popstate', onStoreChange);
+  return () => window.removeEventListener('popstate', onStoreChange);
+}
+
+function getSearchSnapshot(): string {
+  return window.location.search;
+}
+
+function getServerSearchSnapshot(): string {
+  return '';
+}
 
 interface BackLinkViewProps {
   /** Query string from `currentQuery` — `?type=FR` or empty when no filters active. */
@@ -24,12 +37,14 @@ const BackLinkView = ({ query }: BackLinkViewProps) => (
   </nav>
 );
 
-export const BackLinkFallback = () => <BackLinkView query="" />;
-
 export const BackLink = () => {
-  const searchParams = useSearchParams();
+  const search = useSyncExternalStore(
+    subscribeToSearch,
+    getSearchSnapshot,
+    getServerSearchSnapshot,
+  );
   const query = currentQuery(
-    parseTableState(rawSearchParamsFromUrl(searchParams)),
+    parseTableState(rawSearchParamsFromUrl(new URLSearchParams(search))),
   );
   return <BackLinkView query={query} />;
 };

@@ -4,9 +4,8 @@ import { notFound } from 'next/navigation';
 import { getRequirement, listRequirements } from '@/lib/api';
 import { DataError } from '@/components/DataError/DataError';
 import { RequirementDetail } from '@/components/RequirementDetail/RequirementDetail';
-import { DATA_REVALIDATE_SECONDS } from '@/lib/revalidate';
 
-export const revalidate = DATA_REVALIDATE_SECONDS;
+export const revalidate = 300;
 
 export async function generateStaticParams() {
   const result = await listRequirements();
