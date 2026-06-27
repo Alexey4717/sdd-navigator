@@ -8,7 +8,7 @@
   padding: 1.5rem;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .article {
     padding: 1rem;
     gap: 1.25rem;

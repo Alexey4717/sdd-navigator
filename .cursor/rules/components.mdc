@@ -105,11 +105,11 @@ Theme colors via CSS variables defined in `app/globals.css`:
 
 ## Responsive layout
 
-Desktop: `<table>` layout. Mobile (`max-width: 640px`): card layout via CSS only — no JS breakpoint detection.
+Desktop: `<table>` layout. Mobile (`max-width: 767px`): card layout via CSS only — no JS breakpoint detection.
 
 ```css
 /* components/RequirementsTable.module.css */
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   thead { display: none; }
   tr { display: block; margin-bottom: 1rem; }
 }

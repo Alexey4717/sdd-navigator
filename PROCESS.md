@@ -136,7 +136,7 @@ Domain types are generated once from `spec/sdd-coverage-api.yaml` into `lib/api/
 
 ### Deterministic Enforcement — **PARTIAL**
 
-`pnpm verify` is green locally (typecheck, lint, 55 tests, check-coverage, build). `check-coverage.ts` fails on missing or orphan `@req`. GitHub Actions workflow exists (`.github/workflows/ci.yml`) but has not been observed green on GitHub yet — no push was made during SA10. Pre-commit runs lint-staged only; full verify is manual/CI.
+`pnpm verify` is green locally (typecheck, lint, 60 tests, check-coverage, build). `check-coverage.ts` fails on missing or orphan `@req`. GitHub Actions workflow (`.github/workflows/ci.yml`) runs `pnpm verify` on push/PR to `main`. Post-audit fixes (768px breakpoint, layout-matched loading skeletons, strengthened tests) were verified locally before push. Pre-commit runs lint-staged only; full verify is manual/CI.
 
 ### Parsimony — **PASS**
 

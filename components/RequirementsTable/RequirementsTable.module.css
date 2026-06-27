@@ -96,7 +96,7 @@
 }
 
 /* Mobile: card layout via CSS only — no JS breakpoint detection. */
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .table,
   .table tbody,
   .table tr,

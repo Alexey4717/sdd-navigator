@@ -79,4 +79,22 @@ describe('RequirementsTable sort order', () => {
     const idHeader = screen.getByRole('columnheader', { name: /^id/i });
     expect(idHeader).toHaveAttribute('aria-sort', 'ascending');
   });
+
+  it('renders rows in updatedAt descending order when given sorted props', () => {
+    const sorted = sortRequirements(unsorted, 'updatedAt', 'desc');
+    render(
+      <RequirementsTable
+        rows={sorted}
+        state={{ type: [], status: [], sort: 'updatedAt', order: 'desc' }}
+      />,
+    );
+
+    const tbody = screen.getAllByRole('rowgroup')[1];
+    const links = within(tbody!).getAllByRole('link');
+    expect(links.map((l) => l.textContent)).toEqual([
+      'FR-SCAN-001',
+      'FR-API-002',
+      'AR-SEC-001',
+    ]);
+  });
 });

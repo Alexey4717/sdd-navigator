@@ -23,11 +23,18 @@ describe('FilterChips', () => {
     const user = userEvent.setup();
     render(
       <FilterChips
-        state={{ type: [], status: [], sort: DEFAULT_SORT, order: DEFAULT_ORDER }}
+        state={{
+          type: [],
+          status: [],
+          sort: DEFAULT_SORT,
+          order: DEFAULT_ORDER,
+        }}
       />,
     );
 
-    await user.click(screen.getByRole('button', { name: /functional \(FR\)/i }));
+    await user.click(
+      screen.getByRole('button', { name: /functional \(FR\)/i }),
+    );
 
     expect(replace).toHaveBeenCalledWith('/?type=FR', { scroll: false });
     expect(refresh).toHaveBeenCalled();
@@ -46,9 +53,30 @@ describe('FilterChips', () => {
       />,
     );
 
-    await user.click(screen.getByRole('button', { name: /functional \(FR\)/i }));
+    await user.click(
+      screen.getByRole('button', { name: /functional \(FR\)/i }),
+    );
 
     expect(replace).toHaveBeenCalledWith('/', { scroll: false });
+  });
+
+  it('toggles status filter and updates URL via router.replace', async () => {
+    const user = userEvent.setup();
+    render(
+      <FilterChips
+        state={{
+          type: [],
+          status: [],
+          sort: DEFAULT_SORT,
+          order: DEFAULT_ORDER,
+        }}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /^missing$/i }));
+
+    expect(replace).toHaveBeenCalledWith('/?status=missing', { scroll: false });
+    expect(refresh).toHaveBeenCalled();
   });
 
   it('shows clear filters when any chip is selected', () => {
@@ -63,6 +91,8 @@ describe('FilterChips', () => {
       />,
     );
 
-    expect(screen.getByRole('button', { name: /clear filters/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /clear filters/i }),
+    ).toBeInTheDocument();
   });
 });

@@ -4,6 +4,8 @@ Next.js dashboard for SDD coverage: requirements, annotations, tasks, orphan det
 
 **Live:** https://sdd-navigator-sable.vercel.app
 
+**Repo:** https://github.com/Alexey4717/sdd-navigator
+
 ## Modes
 
 | Mode           | How                       | Data source           |

@@ -30,7 +30,7 @@
   flex: 1;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .nav {
     padding: 0.625rem 1rem;
   }

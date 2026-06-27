@@ -37,4 +37,16 @@ describe('SummaryPanel', () => {
     expect(alert).toHaveTextContent('2 orphan annotations');
     expect(alert).toHaveTextContent('1 orphan task');
   });
+
+  it('shows last scan timestamp and type breakdown', () => {
+    render(<SummaryPanel stats={stats} />);
+
+    expect(screen.getByText(/last scan:/i)).toBeInTheDocument();
+
+    const frLabel = screen.getByText('Functional (FR)');
+    expect(frLabel.parentElement?.querySelector('dd')).toHaveTextContent('6');
+
+    const arLabel = screen.getByText('Architectural (AR)');
+    expect(arLabel.parentElement?.querySelector('dd')).toHaveTextContent('2');
+  });
 });

@@ -100,7 +100,7 @@
   border-radius: 0.5rem;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .table,
   .table tbody,
   .table tr,

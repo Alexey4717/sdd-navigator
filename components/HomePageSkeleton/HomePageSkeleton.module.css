@@ -1,0 +1,108 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.panel {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 0.75rem;
+}
+
+.statusBars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.chipGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+}
+
+.sectionHeading {
+  margin-bottom: 0.25rem;
+}
+
+.tableBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tableRows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 7rem 3rem 1fr 5rem 6rem;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.orphanSummary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--foreground) 2%, transparent);
+}
+
+@media (max-width: 767px) {
+  .panel {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .metaGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tableRow {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tableRow:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
