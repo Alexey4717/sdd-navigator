@@ -102,12 +102,23 @@
 <!-- What decisions were made by the human, not the agent. -->
 
 - Separated SA0–SA10 into distinct agent sessions for clean transcript boundaries and PROCESS.md extraction.
+- **Pre-SA0 planning**: Chose CSS Modules + CSS variables, Vitest + RTL, and Vercel (Parsimony / assignment fit) via explicit decision before scaffolding; iteratively edited the master plan — pnpm, per-SA implementation steps, Cursor rules/hooks/subagents (English), CLI-first where available, recommended model per SA.
 - Chose pnpm (`packageManager` pin) over npm/yarn for Vercel compatibility.
 - Chose CSS Modules + CSS variables over Tailwind (Parsimony).
 - Set `loop_limit: 1` on `subagentStop` gate to prevent infinite fix loops.
+- **SA0**: Required incremental `PROCESS.md` updates on every SA step (not a one-shot SA10 dump).
 - **SA1**: Manually pinned `next@16.2.1`, ran initial `pnpm install`, and resumed scaffolding after an interrupted first attempt.
-- **SA4**: Verified hydration fix in browser (console); requested review refactor (globals.css split, `next/script` anti-FOUC, SRP component folders, removed unused SVGs).
-- **Per-SA review**: Ran or reviewed `pnpm verify` / `pnpm typecheck` / `pnpm build` before accepting agent output; several sessions left uncommitted for human review (SA8, SA9, SA10).
+- **SA2**: Explicit “no commit” — review files manually before committing.
+- **SA4**: Verified hydration fix in browser (console); passed terminal hydration warning to subagent; requested review refactor (split `globals.css` → `app/styles/*`, `next/script` anti-FOUC, reusable `Skeleton`, SRP per-component folders, removed unused SVGs).
+- **SA5**: After token budget hit, mandated `composer-2.5-fast` for SA6–SA10; browser review found sort `order` stuck on `desc` and filter deselect leaving stale table rows — delegated fixes with open-browser verification; requested `docs/dev-log.md` update.
+- **SA6 follow-up**: Spotted unwanted side effect — initial detail RSC `await searchParams` only for back-link filter preservation while content depends solely on `params.id` (build: `ƒ /requirements/[id] dynamic`). Asked whether rendering could be ISR without losing back-link UX; approved implementation with `revalidate = 300` + `generateStaticParams`, client `BackLink` + `useSearchParams()`, and aligned live `fetch` cache; probed repeat-visit Network tab (ISR vs Router Cache in dev vs prod); requested `docs/dev-log.md` entry.
+- **SA7**: Clarified TasksPanel status filter stays client-side (not URL) — assignment does not require shareable task filters on the home page.
+- **Cross-cutting**: Requested same-layer relative imports in `lib/` (no `@/lib/*` within `lib/`) — rule added to `.cursor` and codebase audited.
+- **Runtime QA**: Reported chunk `500` after back navigation from detail to `/`; reported terminal errors on detail URL navigation — drove follow-up debugging.
+- **SA8**: Checked incomplete subagent output; questioned purpose of `tests/fixtures/malformed/requirements.json` invalid JSON fixture.
+- **Post-SA10 / deploy**: Chose Vercel **Project** env for `NEXT_PUBLIC_API_URL` (unset for mock default); tested live mode in browser with local `.env`; asked whether upstream API `502` should be noted to assignment authors.
+- **Pre-submission audit**: Ran full assignment compliance check; flagged home/detail loading skeletons not matching real layout; approved audit plan execution; pointed out `RequirementDetailSkeleton` still wrong after first skeleton pass (annotations cards + 5-column tasks table).
+- **Per-SA review**: Ran or reviewed `pnpm verify` / `pnpm typecheck` / `pnpm build` before accepting agent output; several sessions left uncommitted for human review (SA2 onward, including SA6 follow-up, SA8, SA9, SA10).
 - **SA10**: Approved final submission scope; deploy executed without git commit/push.
 
 ## 6. Course Corrections
