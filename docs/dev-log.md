@@ -176,3 +176,90 @@ All files as specified in the SA2 prompt. No deviations from the plan.
 None.
 
 ---
+
+## SA3 — Data layer
+
+**Start**: 2026-06-27 ~18:32 local (UTC+10)
+**End**: 2026-06-27 ~18:48 local (UTC+10)
+
+### Task summary
+
+Built the typed, framework-agnostic data layer: a `Result`-based error model, a single
+shared coverage-logic module, one `DataProvider` interface with mock + live
+implementations, and a public entrypoint that selects the provider by env var. Strict
+TypeScript, zero `any`, no thrown exceptions for expected failures.
+
+**Plan reference**: `sdd_navigator_dashboard_c8569307.plan.md` §SA3, §1 (DRY/Traceability), §2 (Architecture).
+
+### Files created
+
+| File | Purpose |
+|---|---|
+| `lib/api/errors.ts` | `ApiErrorKind`/`ApiError`/`Result<T>` + `ok()`/`err()` helpers |
+| `lib/coverage.ts` | Single source of filter/sort/assess/orphan/`computeStats` logic |
+| `lib/api/provider.ts` | `DataProvider` interface (7 methods) + exported filter param types |
+| `lib/api/mock.ts` | Server-side provider reading `data/*.json` via `fs/promises` |
+| `lib/api/live.ts` | `fetch`-based provider mapping all failures to `Result` |
+| `lib/api/index.ts` | Provider selection by `NEXT_PUBLIC_API_URL` + bound public API |
+
+### Design
+
+- **`Result` over exceptions**: `type Result<T> = { ok: true; data: T } | { ok: false; error: ApiError }`.
+  `ApiErrorKind = 'network' | 'not_found' | 'malformed' | 'http'`. Helpers `ok(data)` and
+  `err(kind, message, status?)`. No expected failure is ever thrown.
+- **Single `DataProvider` interface**: both `mock.ts` and `live.ts` implement the same 7
+  methods returning `Promise<Result<...>>`. Selection lives only in `index.ts`.
+- **DRY coverage module**: all filtering/sorting/orphan/assessment lives in `lib/coverage.ts`
+  and is reused by both providers (and later components/tests). Provider filter param types
+  (`RequirementListFilters`, `AnnotationListFilters`, `TaskListFilters`) extend the shared
+  coverage filters and add list-only `sort`/`order`.
+- **Domain types**: imported exclusively from `@/lib/api/types` (generated from the spec) —
+  no hand-rolled shapes anywhere.
+
+### @req mapping
+
+| Behavior | @req |
+|---|---|
+| Typed client/types, coverage module header | SCD-API-001 |
+| Provider selection by env, `DataProvider`, scan methods, factories | SCD-API-002 |
+| `Result`/`ApiError`, `ok`/`err`, error model | SCD-API-003 |
+| `computeStats`, `getStats`, `getScanStatus` | SCD-SUM-001 |
+| `filterRequirements`, `listRequirements` | SCD-FLT-001 |
+| `sortRequirements` | SCD-SORT-001 |
+| `assessCoverage`, `getRequirement` (detail) | SCD-DET-001 |
+| `findOrphanAnnotations`, `filterAnnotations`, `listAnnotations` | SCD-ORPH-001 |
+| `findOrphanTasks`, `filterTasks`, `sortTasks`, `listTasks` | SCD-TASK-001 |
+
+### Mock reads / live error mapping
+
+- **Mock**: reads `data/*.json` from a configurable base dir (default `<cwd>/data`) so SA8 can
+  point it at fixtures. Each read goes through a guarded helper: missing/empty file → `err('malformed')`,
+  `JSON.parse` failure → `err('malformed')`, shape mismatch (not array / not object) → `err('malformed')`.
+  `getRequirement(id)` joins the requirement with its annotations (`reqId === id`) and tasks
+  (`requirementId === id`); absent id → `err('not_found', …, 404)`. `getStats` reads `stats.json`
+  (with `computeStats` kept available in `lib/coverage.ts` as the single computation path).
+  `triggerScan` → `{ status: 'scanning', startedAt: now }`; `getScanStatus` → `completed` using `stats.lastScanAt`.
+- **Live**: `fetch(`${baseUrl}${path}`)` with `baseUrl` from `NEXT_PUBLIC_API_URL`; query strings
+  built from filters. Mapping: thrown fetch → `err('network')`; `res.status === 404` → `err('not_found')`;
+  other non-ok → `err('http', …, status)`; `res.json()` failure → `err('malformed')`; success → `ok(data as T)`.
+
+### Verification
+
+| Command | Result |
+|---|---|
+| `pnpm typecheck` | PASS (strict, no `any`) |
+| `pnpm lint` | PASS (0 errors; 3 pre-existing `.cursor/hooks/*.mjs` warnings only) |
+| `pnpm check-coverage` | PASS (SA9 placeholder) |
+| Smoke (mock provider via `tsx`) | `getStats` coverage=62.5 total=8; `listRequirements` count=8; `status=missing` → AR-PERF-001, AR-SEC-001; orphan annotations FR-LEGACY-001, FR-API-099; orphan task TASK-006; detail FR-SCAN-001 anns=3 tasks=1; `NOPE-999` → `not_found` |
+
+Smoke script was temporary and removed (no test files added — that is SA8).
+
+### What was accepted
+
+All deliverables as specified. No `git` commit made (left for the user to review).
+
+### What was rejected / corrected
+
+None.
+
+---
