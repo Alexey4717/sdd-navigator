@@ -872,3 +872,50 @@ Supporting artifacts: `tests/fixtures/{malformed,empty,empty-file,malformed-yaml
 No `git` commit made (left for user review).
 
 ---
+
+## SA9 — Deterministic checks
+
+**Start**: 2026-06-27 ~22:50 local (UTC+10)
+**End**: 2026-06-27 ~23:00 local (UTC+10)
+
+### Task summary
+
+Replace `scripts/check-coverage.ts` placeholder with full traceability enforcement; add GitHub Actions CI running `pnpm verify`; ensure all 17 SCD requirements have `@req` references.
+
+### Prompt (summary)
+
+Implement SA9: parse `requirements.yaml`, scan `@req SCD-...` in `app/`, `components/`, `lib/`, `scripts/`, and `**/*.test.ts(x)`; exit 1 on uncovered requirements or orphan annotations; add `.github/workflows/ci.yml` (pnpm + Node 22, frozen lockfile, `pnpm verify`); run full verify and fix gaps; update dev-log and PROCESS.md. No commit.
+
+### Deliverables
+
+| Artifact                    | Purpose                                                                                                    |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `scripts/check-coverage.ts` | Parses requirements.yaml; scans 55 source/test files; prints per-ID report; exit 1 on gap or orphan `@req` |
+| `.github/workflows/ci.yml`  | push/PR on `main` → checkout, pnpm, Node 22 cache, `pnpm install --frozen-lockfile`, `pnpm verify`         |
+
+### check-coverage behavior
+
+- Regex: `/@req\s+(SCD-[A-Z0-9-]+)/g`
+- Skips `node_modules`, `.next`
+- Reports each requirement as `yes` / `NO` with up to 5 referencing files (+N more)
+- Orphan `@req` (ID not in requirements.yaml) → warning + exit 1
+- Script tagged `// @req SCD-DEPLOY-001` (verify gate / deployment readiness)
+
+### @req gaps fixed
+
+- **SCD-DEPLOY-001** — only missing ID; added via `@req` on `scripts/check-coverage.ts` (enforcement is part of the verify/deploy gate; live Vercel URL deferred to SA10)
+
+### Pre-commit hook
+
+- Existing `.husky/pre-commit` runs `pnpm exec lint-staged` only (unchanged) — fast local flow; full `pnpm verify` enforced in CI per SA0 gate design
+
+### Verification
+
+| Check                 | Result                                                                                 |
+| --------------------- | -------------------------------------------------------------------------------------- |
+| `pnpm check-coverage` | PASS — 17/17 requirements, 55 files scanned                                            |
+| `pnpm verify`         | PASS — typecheck, lint (3 pre-existing hook warnings), 55 tests, check-coverage, build |
+
+No `git` commit made (left for user review).
+
+---

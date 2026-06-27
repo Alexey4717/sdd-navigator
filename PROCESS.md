@@ -21,22 +21,24 @@
 | SA6  | composer-2.5-fast (ui-engineer)                   | Requirement detail route + RequirementDetail component tree, back-link filter preservation, not-found |
 | SA7  | composer-2.5-fast (ui-engineer)                   | TasksPanel + OrphanPanel, parallel fetch on home page, client task status filter, coverage.ts orphans |
 | SA8  | claude-4.6-sonnet-medium-thinking (test-engineer) | Vitest+RTL: 12 test files (55 tests), fixtures for malformed/empty data, lib + component coverage     |
+| SA9  | claude-4.6-sonnet-medium-thinking                 | check-coverage.ts traceability gate, GitHub Actions CI (`pnpm verify`), full verify green             |
 
 ## 2. Conversation Log
 
 <!-- One row per SA. Append after each step. -->
 
-| Step | Topic                            | Prompt summary                                                                                                                                                                                                                            | What was accepted                                                                                                 | What was rejected / corrected                                                 |
-| ---- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| SA0  | Cursor tooling setup             | Create .cursor/rules/_.mdc, hooks.json + scripts, .cursor/agents/_.md, AGENTS.md, PROCESS.md skeleton, docs/dev-log.md                                                                                                                    | All files created as specified                                                                                    | —                                                                             |
-| SA1  | Scaffolding & config (continued) | Finish SA1 configs without reinstall; user set package versions/PM manually                                                                                                                                                               | All config files accepted; lint script fixed for Next 16; dev deps installed; verify green                        | —                                                                             |
-| SA2  | Spec artifacts and data          | Download spec/sdd-coverage-api.yaml; author requirements.yaml (17 SCD IDs); create data/\*.json (8 req/16 ann/6 tasks) with DRY-consistent stats; run gen:types; create lib/api/types.ts                                                  | All files accepted; DRY-consistency verified (all 16 metrics match); gen:types ran; typecheck green               | —                                                                             |
-| SA3  | Data layer                       | Build errors.ts (Result/ApiError, no throw), lib/coverage.ts (filter/sort/assess/orphan/computeStats), DataProvider interface, mock (fs) + live (fetch) providers, index.ts (env-based selection)                                         | All 6 files accepted; typecheck/lint green; smoke check confirmed coverage 62.5, 8 reqs, orphans detected         | —                                                                             |
-| SA4  | Summary panel + theme            | SummaryPanel RSC (prop-based), ThemeToggle (useSyncExternalStore + custom event), anti-FOUC in layout head, page error/success state, loading skeleton                                                                                    | All deliverables; typecheck/lint/build green                                                                      | ThemeToggle setState-in-effect lint error; replaced with useSyncExternalStore |
-| SA5  | Requirements table + filters     | RequirementsTable (RSC, sortable headers, responsive cards, empty state), FilterChips (client multi-select), URL-as-source-of-truth via lib/url-filters.ts, multi-select filter/sort via coverage.ts, wire into page (await searchParams) | All deliverables; typecheck/lint/build green; `/` dynamic                                                         | —                                                                             |
-| SA6  | Requirement detail               | Route `app/requirements/[id]` (RSC), RequirementDetail SRP split (meta, annotations, tasks, back link), `notFound` + `not-found.tsx`, `assessCoverage` label, reuse StatusBadge, preserve filters on back via url-filters                 | All deliverables; typecheck/lint/build green; smoke FR-SCAN-001 / NOPE-999 / back `?type=FR`                      | —                                                                             |
-| SA7  | Tasks panel + Orphan panel       | TasksPanel (status filter, orphan highlight, responsive table), OrphanPanel (collapsible details), wire into page with parallel fetch, reuse findOrphan\* / filterTasks from coverage.ts                                                  | All deliverables; client-side task status filter (not URL); typecheck/lint/build green; smoke 6 tasks + 3 orphans | Fixed pre-existing build break: revalidate literal 300 in detail page         |
-| SA8  | Vitest + RTL tests               | Data layer tests (mock/live/coverage/url-filters, fixtures for malformed JSON/empty/YAML); component tests (SummaryPanel, RequirementsTable, FilterChips, RequirementDetail, TasksPanel, OrphanPanel); `// @req` first line per file      | 12 test files, 55 tests; fixtures under tests/fixtures/; vitest-env.d.ts for tsc; test/lint/typecheck green       | Tests assert actual sortHref behavior (default order omitted from URL)        |
+| Step | Topic                            | Prompt summary                                                                                                                                                                                                                            | What was accepted                                                                                                 | What was rejected / corrected                                                  |
+| ---- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| SA0  | Cursor tooling setup             | Create .cursor/rules/_.mdc, hooks.json + scripts, .cursor/agents/_.md, AGENTS.md, PROCESS.md skeleton, docs/dev-log.md                                                                                                                    | All files created as specified                                                                                    | —                                                                              |
+| SA1  | Scaffolding & config (continued) | Finish SA1 configs without reinstall; user set package versions/PM manually                                                                                                                                                               | All config files accepted; lint script fixed for Next 16; dev deps installed; verify green                        | —                                                                              |
+| SA2  | Spec artifacts and data          | Download spec/sdd-coverage-api.yaml; author requirements.yaml (17 SCD IDs); create data/\*.json (8 req/16 ann/6 tasks) with DRY-consistent stats; run gen:types; create lib/api/types.ts                                                  | All files accepted; DRY-consistency verified (all 16 metrics match); gen:types ran; typecheck green               | —                                                                              |
+| SA3  | Data layer                       | Build errors.ts (Result/ApiError, no throw), lib/coverage.ts (filter/sort/assess/orphan/computeStats), DataProvider interface, mock (fs) + live (fetch) providers, index.ts (env-based selection)                                         | All 6 files accepted; typecheck/lint green; smoke check confirmed coverage 62.5, 8 reqs, orphans detected         | —                                                                              |
+| SA4  | Summary panel + theme            | SummaryPanel RSC (prop-based), ThemeToggle (useSyncExternalStore + custom event), anti-FOUC in layout head, page error/success state, loading skeleton                                                                                    | All deliverables; typecheck/lint/build green                                                                      | ThemeToggle setState-in-effect lint error; replaced with useSyncExternalStore  |
+| SA5  | Requirements table + filters     | RequirementsTable (RSC, sortable headers, responsive cards, empty state), FilterChips (client multi-select), URL-as-source-of-truth via lib/url-filters.ts, multi-select filter/sort via coverage.ts, wire into page (await searchParams) | All deliverables; typecheck/lint/build green; `/` dynamic                                                         | —                                                                              |
+| SA6  | Requirement detail               | Route `app/requirements/[id]` (RSC), RequirementDetail SRP split (meta, annotations, tasks, back link), `notFound` + `not-found.tsx`, `assessCoverage` label, reuse StatusBadge, preserve filters on back via url-filters                 | All deliverables; typecheck/lint/build green; smoke FR-SCAN-001 / NOPE-999 / back `?type=FR`                      | —                                                                              |
+| SA7  | Tasks panel + Orphan panel       | TasksPanel (status filter, orphan highlight, responsive table), OrphanPanel (collapsible details), wire into page with parallel fetch, reuse findOrphan\* / filterTasks from coverage.ts                                                  | All deliverables; client-side task status filter (not URL); typecheck/lint/build green; smoke 6 tasks + 3 orphans | Fixed pre-existing build break: revalidate literal 300 in detail page          |
+| SA8  | Vitest + RTL tests               | Data layer tests (mock/live/coverage/url-filters, fixtures for malformed JSON/empty/YAML); component tests (SummaryPanel, RequirementsTable, FilterChips, RequirementDetail, TasksPanel, OrphanPanel); `// @req` first line per file      | 12 test files, 55 tests; fixtures under tests/fixtures/; vitest-env.d.ts for tsc; test/lint/typecheck green       | Tests assert actual sortHref behavior (default order omitted from URL)         |
+| SA9  | Deterministic checks             | Full `scripts/check-coverage.ts` (requirements.yaml parse + @req scan, orphan detection, exit 1); `.github/workflows/ci.yml` (main push/PR → pnpm verify); run full verify                                                                | check-coverage 17/17; verify green; pre-commit left as lint-staged only                                           | SCD-DEPLOY-001 covered via check-coverage.ts @req until SA10 README/Vercel URL |
 
 ## 3. Timeline
 
@@ -53,6 +55,7 @@
 | SA6  | 2026-06-27 ~21:00 local (UTC+10) | 2026-06-27 ~21:20 local (UTC+10) | Requirement detail route + components; back-link preserves query; typecheck/lint/build green |
 | SA7  | 2026-06-27 ~22:00 local (UTC+10) | 2026-06-27 ~22:25 local (UTC+10) | TasksPanel + OrphanPanel; client task filter; typecheck/lint/build green; smoke OK           |
 | SA8  | 2026-06-27 ~22:35 local (UTC+10) | 2026-06-27 ~22:45 local (UTC+10) | 12 test files, 55 Vitest+RTL tests; fixtures; typecheck/lint/test green                      |
+| SA9  | 2026-06-27 ~22:50 local (UTC+10) | 2026-06-27 ~23:00 local (UTC+10) | check-coverage.ts + CI workflow; verify green (17/17 @req coverage)                          |
 
 ## 4. Key Decisions
 
@@ -85,6 +88,10 @@
 - **SA8**: Malformed YAML covered by `scripts/requirements-yaml.test.ts` with inline `parseYamlSafe` Result helper (SA9 prep) — `check-coverage.ts` not yet implemented.
 - **SA8**: One `@req` per test file (primary requirement under test); component tests mock `next/link` and `next/navigation` where needed; RSC components tested with props only.
 - **SA8**: Added `vitest-env.d.ts` triple-slash reference so `tsc --noEmit` recognizes Vitest globals (`describe`, `it`, `vi`, `expect`).
+- **SA9**: `check-coverage.ts` scans `app/`, `components/`, `lib/`, `scripts/` plus any `*.test.ts(x)` repo-wide; bidirectional traceability (uncovered req + orphan `@req` both exit 1).
+- **SA9**: CI workflow minimal — pnpm/action-setup + Node 22 + frozen lockfile + `pnpm verify` on `main` push/PR.
+- **SA9**: Pre-commit hook unchanged (`lint-staged` only); full verify delegated to CI and developer pre-push habit (matches SA0 gate.mjs scope).
+- **SA9**: `SCD-DEPLOY-001` temporarily satisfied by `@req` on check-coverage.ts; production URL/README in SA10.
 
 ## 5. What the Developer Controlled
 
@@ -114,7 +121,7 @@
 
 - [ ] All behaviors in `lib/`, `app/`, `components/` tagged with `@req SCD-XXX-NNN`.
 - [ ] All test files start with `// @req`.
-- [ ] `pnpm check-coverage` exits 0.
+- [x] `pnpm check-coverage` exits 0.
 - [ ] Commits follow `type(scope): message [SCD-XXX-NNN]` format throughout.
 
 ### DRY
@@ -125,9 +132,9 @@
 
 ### Deterministic Enforcement
 
-- [ ] `pnpm verify` exits 0 on final state.
+- [x] `pnpm verify` exits 0 on final state.
 - [ ] GitHub Actions CI green on main branch.
-- [ ] `check-coverage.ts` catches orphan and unimplemented requirements.
+- [x] `check-coverage.ts` catches orphan and unimplemented requirements.
 
 ### Parsimony
 
