@@ -22,23 +22,25 @@
 | SA7  | composer-2.5-fast (ui-engineer)                   | TasksPanel + OrphanPanel, parallel fetch on home page, client task status filter, coverage.ts orphans |
 | SA8  | claude-4.6-sonnet-medium-thinking (test-engineer) | Vitest+RTL: 12 test files (55 tests), fixtures for malformed/empty data, lib + component coverage     |
 | SA9  | claude-4.6-sonnet-medium-thinking                 | check-coverage.ts traceability gate, GitHub Actions CI (`pnpm verify`), full verify green             |
+| SA10 | claude-4.6-sonnet-medium-thinking                 | README, Vercel production deploy, PROCESS.md finalized, dev-log SA10 entry                            |
 
 ## 2. Conversation Log
 
 <!-- One row per SA. Append after each step. -->
 
-| Step | Topic                            | Prompt summary                                                                                                                                                                                                                            | What was accepted                                                                                                 | What was rejected / corrected                                                  |
-| ---- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| SA0  | Cursor tooling setup             | Create .cursor/rules/_.mdc, hooks.json + scripts, .cursor/agents/_.md, AGENTS.md, PROCESS.md skeleton, docs/dev-log.md                                                                                                                    | All files created as specified                                                                                    | —                                                                              |
-| SA1  | Scaffolding & config (continued) | Finish SA1 configs without reinstall; user set package versions/PM manually                                                                                                                                                               | All config files accepted; lint script fixed for Next 16; dev deps installed; verify green                        | —                                                                              |
-| SA2  | Spec artifacts and data          | Download spec/sdd-coverage-api.yaml; author requirements.yaml (17 SCD IDs); create data/\*.json (8 req/16 ann/6 tasks) with DRY-consistent stats; run gen:types; create lib/api/types.ts                                                  | All files accepted; DRY-consistency verified (all 16 metrics match); gen:types ran; typecheck green               | —                                                                              |
-| SA3  | Data layer                       | Build errors.ts (Result/ApiError, no throw), lib/coverage.ts (filter/sort/assess/orphan/computeStats), DataProvider interface, mock (fs) + live (fetch) providers, index.ts (env-based selection)                                         | All 6 files accepted; typecheck/lint green; smoke check confirmed coverage 62.5, 8 reqs, orphans detected         | —                                                                              |
-| SA4  | Summary panel + theme            | SummaryPanel RSC (prop-based), ThemeToggle (useSyncExternalStore + custom event), anti-FOUC in layout head, page error/success state, loading skeleton                                                                                    | All deliverables; typecheck/lint/build green                                                                      | ThemeToggle setState-in-effect lint error; replaced with useSyncExternalStore  |
-| SA5  | Requirements table + filters     | RequirementsTable (RSC, sortable headers, responsive cards, empty state), FilterChips (client multi-select), URL-as-source-of-truth via lib/url-filters.ts, multi-select filter/sort via coverage.ts, wire into page (await searchParams) | All deliverables; typecheck/lint/build green; `/` dynamic                                                         | —                                                                              |
-| SA6  | Requirement detail               | Route `app/requirements/[id]` (RSC), RequirementDetail SRP split (meta, annotations, tasks, back link), `notFound` + `not-found.tsx`, `assessCoverage` label, reuse StatusBadge, preserve filters on back via url-filters                 | All deliverables; typecheck/lint/build green; smoke FR-SCAN-001 / NOPE-999 / back `?type=FR`                      | —                                                                              |
-| SA7  | Tasks panel + Orphan panel       | TasksPanel (status filter, orphan highlight, responsive table), OrphanPanel (collapsible details), wire into page with parallel fetch, reuse findOrphan\* / filterTasks from coverage.ts                                                  | All deliverables; client-side task status filter (not URL); typecheck/lint/build green; smoke 6 tasks + 3 orphans | Fixed pre-existing build break: revalidate literal 300 in detail page          |
-| SA8  | Vitest + RTL tests               | Data layer tests (mock/live/coverage/url-filters, fixtures for malformed JSON/empty/YAML); component tests (SummaryPanel, RequirementsTable, FilterChips, RequirementDetail, TasksPanel, OrphanPanel); `// @req` first line per file      | 12 test files, 55 tests; fixtures under tests/fixtures/; vitest-env.d.ts for tsc; test/lint/typecheck green       | Tests assert actual sortHref behavior (default order omitted from URL)         |
-| SA9  | Deterministic checks             | Full `scripts/check-coverage.ts` (requirements.yaml parse + @req scan, orphan detection, exit 1); `.github/workflows/ci.yml` (main push/PR → pnpm verify); run full verify                                                                | check-coverage 17/17; verify green; pre-commit left as lint-staged only                                           | SCD-DEPLOY-001 covered via check-coverage.ts @req until SA10 README/Vercel URL |
+| Step | Topic                            | Prompt summary                                                                                                                                                                                                                            | What was accepted                                                                                                 | What was rejected / corrected                                                                        |
+| ---- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| SA0  | Cursor tooling setup             | Create .cursor/rules/_.mdc, hooks.json + scripts, .cursor/agents/_.md, AGENTS.md, PROCESS.md skeleton, docs/dev-log.md                                                                                                                    | All files created as specified                                                                                    | —                                                                                                    |
+| SA1  | Scaffolding & config (continued) | Finish SA1 configs without reinstall; user set package versions/PM manually                                                                                                                                                               | All config files accepted; lint script fixed for Next 16; dev deps installed; verify green                        | —                                                                                                    |
+| SA2  | Spec artifacts and data          | Download spec/sdd-coverage-api.yaml; author requirements.yaml (17 SCD IDs); create data/\*.json (8 req/16 ann/6 tasks) with DRY-consistent stats; run gen:types; create lib/api/types.ts                                                  | All files accepted; DRY-consistency verified (all 16 metrics match); gen:types ran; typecheck green               | —                                                                                                    |
+| SA3  | Data layer                       | Build errors.ts (Result/ApiError, no throw), lib/coverage.ts (filter/sort/assess/orphan/computeStats), DataProvider interface, mock (fs) + live (fetch) providers, index.ts (env-based selection)                                         | All 6 files accepted; typecheck/lint green; smoke check confirmed coverage 62.5, 8 reqs, orphans detected         | —                                                                                                    |
+| SA4  | Summary panel + theme            | SummaryPanel RSC (prop-based), ThemeToggle (useSyncExternalStore + custom event), anti-FOUC in layout head, page error/success state, loading skeleton                                                                                    | All deliverables; typecheck/lint/build green                                                                      | ThemeToggle setState-in-effect lint error; replaced with useSyncExternalStore                        |
+| SA5  | Requirements table + filters     | RequirementsTable (RSC, sortable headers, responsive cards, empty state), FilterChips (client multi-select), URL-as-source-of-truth via lib/url-filters.ts, multi-select filter/sort via coverage.ts, wire into page (await searchParams) | All deliverables; typecheck/lint/build green; `/` dynamic                                                         | —                                                                                                    |
+| SA6  | Requirement detail               | Route `app/requirements/[id]` (RSC), RequirementDetail SRP split (meta, annotations, tasks, back link), `notFound` + `not-found.tsx`, `assessCoverage` label, reuse StatusBadge, preserve filters on back via url-filters                 | All deliverables; typecheck/lint/build green; smoke FR-SCAN-001 / NOPE-999 / back `?type=FR`                      | —                                                                                                    |
+| SA7  | Tasks panel + Orphan panel       | TasksPanel (status filter, orphan highlight, responsive table), OrphanPanel (collapsible details), wire into page with parallel fetch, reuse findOrphan\* / filterTasks from coverage.ts                                                  | All deliverables; client-side task status filter (not URL); typecheck/lint/build green; smoke 6 tasks + 3 orphans | Fixed pre-existing build break: revalidate literal 300 in detail page                                |
+| SA8  | Vitest + RTL tests               | Data layer tests (mock/live/coverage/url-filters, fixtures for malformed JSON/empty/YAML); component tests (SummaryPanel, RequirementsTable, FilterChips, RequirementDetail, TasksPanel, OrphanPanel); `// @req` first line per file      | 12 test files, 55 tests; fixtures under tests/fixtures/; vitest-env.d.ts for tsc; test/lint/typecheck green       | Tests assert actual sortHref behavior (default order omitted from URL)                               |
+| SA9  | Deterministic checks             | Full `scripts/check-coverage.ts` (requirements.yaml parse + @req scan, orphan detection, exit 1); `.github/workflows/ci.yml` (main push/PR → pnpm verify); run full verify                                                                | check-coverage 17/17; verify green; pre-commit left as lint-staged only                                           | SCD-DEPLOY-001 covered via check-coverage.ts @req until SA10 README/Vercel URL                       |
+| SA10 | Final submission                 | README (concise), Vercel prod deploy via `npx vercel@latest deploy --prod -y`, finalize PROCESS.md (7 sections), append dev-log, final `pnpm verify`                                                                                      | README with live URL; production deploy Ready (HTTP 200); PROCESS.md complete; verify green                       | Global Vercel CLI 41.x too old — used `npx vercel@latest` (54.x); device OAuth re-auth during deploy |
 
 ## 3. Timeline
 
@@ -56,6 +58,7 @@
 | SA7  | 2026-06-27 ~22:00 local (UTC+10) | 2026-06-27 ~22:25 local (UTC+10) | TasksPanel + OrphanPanel; client task filter; typecheck/lint/build green; smoke OK           |
 | SA8  | 2026-06-27 ~22:35 local (UTC+10) | 2026-06-27 ~22:45 local (UTC+10) | 12 test files, 55 Vitest+RTL tests; fixtures; typecheck/lint/test green                      |
 | SA9  | 2026-06-27 ~22:50 local (UTC+10) | 2026-06-27 ~23:00 local (UTC+10) | check-coverage.ts + CI workflow; verify green (17/17 @req coverage)                          |
+| SA10 | 2026-06-27 ~23:15 local (UTC+10) | 2026-06-27 ~23:25 local (UTC+10) | README; Vercel prod deploy; PROCESS.md finalized; verify green                               |
 
 ## 4. Key Decisions
 
@@ -92,15 +95,20 @@
 - **SA9**: CI workflow minimal — pnpm/action-setup + Node 22 + frozen lockfile + `pnpm verify` on `main` push/PR.
 - **SA9**: Pre-commit hook unchanged (`lint-staged` only); full verify delegated to CI and developer pre-push habit (matches SA0 gate.mjs scope).
 - **SA9**: `SCD-DEPLOY-001` temporarily satisfied by `@req` on check-coverage.ts; production URL/README in SA10.
+- **SA10**: Production URL documented in README (not `@req` in markdown — check-coverage scans code/tests only); deploy via CLI without git push to keep review gate with the human.
 
 ## 5. What the Developer Controlled
 
 <!-- What decisions were made by the human, not the agent. -->
 
-- Chose to separate SA steps into distinct agent sessions for clean transcript boundaries.
-- Decided on pnpm as package manager (over npm/yarn) for Vercel compatibility and workspace support.
-- Chose CSS Modules over Tailwind to demonstrate Parsimony pillar.
+- Separated SA0–SA10 into distinct agent sessions for clean transcript boundaries and PROCESS.md extraction.
+- Chose pnpm (`packageManager` pin) over npm/yarn for Vercel compatibility.
+- Chose CSS Modules + CSS variables over Tailwind (Parsimony).
 - Set `loop_limit: 1` on `subagentStop` gate to prevent infinite fix loops.
+- **SA1**: Manually pinned `next@16.2.1`, ran initial `pnpm install`, and resumed scaffolding after an interrupted first attempt.
+- **SA4**: Verified hydration fix in browser (console); requested review refactor (globals.css split, `next/script` anti-FOUC, SRP component folders, removed unused SVGs).
+- **Per-SA review**: Ran or reviewed `pnpm verify` / `pnpm typecheck` / `pnpm build` before accepting agent output; several sessions left uncommitted for human review (SA8, SA9, SA10).
+- **SA10**: Approved final submission scope; deploy executed without git commit/push.
 
 ## 6. Course Corrections
 
@@ -112,32 +120,24 @@
 | SA4  | React hydration mismatch on `<html data-theme>` — anti-FOUC script mutates the attribute pre-hydration, so client DOM differs from SSR HTML | Added `suppressHydrationWarning` to the `<html>` element only (canonical Next.js/React pattern); anti-FOUC approach unchanged. Verified via browser console capture — warning gone                                            |
 | SA4  | Inline anti-FOUC `dangerouslySetInnerHTML`; flat components; default SVGs                                                                   | Review refactor: split globals.css into app/styles/\*; switched to next/script inline-children (beforeInteractive) — no FOUC; per-folder components + SummaryPanel SRP split; reusable Skeleton; deleted 5 unused public SVGs |
 | SA5  | Sort toggle stuck at `?order=desc`; filter deselect updated URL but table stayed stale                                                      | `sortHref` returned `''` for default sort/order — Link could not clear query; added `router.refresh()` after `router.replace` in FilterChips so RSC re-reads `searchParams`                                                   |
+| SA10 | Global `vercel` CLI 41.1.0 rejected upload (requires ≥ 47.2.2)                                                                              | Deploy succeeded with `npx vercel@latest` (54.x); device OAuth login during npx session; production Ready at https://sdd-navigator-sable.vercel.app                                                                           |
 
 ## 7. Self-Assessment (SDD Four Pillars)
 
-<!-- Fill in SA10 with final honest evaluation. -->
+Honest evaluation at submission time.
 
-### Traceability
+### Traceability — **PASS**
 
-- [ ] All behaviors in `lib/`, `app/`, `components/` tagged with `@req SCD-XXX-NNN`.
-- [ ] All test files start with `// @req`.
-- [x] `pnpm check-coverage` exits 0.
-- [ ] Commits follow `type(scope): message [SCD-XXX-NNN]` format throughout.
+Every public behavior in `app/`, `components/`, and `lib/` carries `@req SCD-XXX-NNN`; all 12 test files lead with `// @req`. `pnpm check-coverage` reports 17/17. Git commits from SA1 onward include requirement IDs in messages (e.g. `[SCD-FLT-002]`). `SCD-DEPLOY-001` is referenced in `scripts/check-coverage.ts` and satisfied semantically by the live URL in README.
 
-### DRY
+### DRY — **PASS**
 
-- [ ] Types defined once in `lib/api/types.ts` (generated from spec).
-- [ ] Filter/sort/assess logic only in `lib/coverage.ts`.
-- [ ] No duplicated logic between mock and live providers.
+Domain types are generated once from `spec/sdd-coverage-api.yaml` into `lib/api/types.ts`. Filter, sort, assess, orphan, and stats logic live only in `lib/coverage.ts` and are reused by mock/live providers, UI, and tests. Mock stats match `data/*.json` arrays (62.5% coverage, known orphans).
 
-### Deterministic Enforcement
+### Deterministic Enforcement — **PARTIAL**
 
-- [x] `pnpm verify` exits 0 on final state.
-- [ ] GitHub Actions CI green on main branch.
-- [x] `check-coverage.ts` catches orphan and unimplemented requirements.
+`pnpm verify` is green locally (typecheck, lint, 55 tests, check-coverage, build). `check-coverage.ts` fails on missing or orphan `@req`. GitHub Actions workflow exists (`.github/workflows/ci.yml`) but has not been observed green on GitHub yet — no push was made during SA10. Pre-commit runs lint-staged only; full verify is manual/CI.
 
-### Parsimony
+### Parsimony — **PASS**
 
-- [ ] Zero unjustified dependencies.
-- [ ] README is short and factual.
-- [ ] No boilerplate abstractions or over-engineered layers.
+No CSS framework; dependencies limited to Next/React, Vitest/RTL, openapi-typescript, yaml, tooling. No throw-based API errors, no duplicate type definitions, no gratuitous abstractions. README is one screen; PROCESS.md is factual, not marketing.

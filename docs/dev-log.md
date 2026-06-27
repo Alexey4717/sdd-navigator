@@ -919,3 +919,50 @@ Implement SA9: parse `requirements.yaml`, scan `@req SCD-...` in `app/`, `compon
 No `git` commit made (left for user review).
 
 ---
+
+## SA10 — Final
+
+**Start**: 2026-06-27 ~23:15 local (UTC+10)
+**End**: 2026-06-27 ~23:25 local (UTC+10)
+
+### Task summary
+
+Final submission step: concise README with live URL, Vercel production deploy, finalize `PROCESS.md` (all 7 sections), final `pnpm verify`.
+
+### Prompt (summary)
+
+Implement SA10 per plan: README (what/run/verify/deploy/live URL), deploy to Vercel (`vercel deploy --prod -y`), generate PROCESS.md from dev-log, append SA10 dev-log entry, green verify. No git commit unless deploy requires it.
+
+### Deliverables
+
+| Artifact          | Result                                                                                                     |
+| ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| `README.md`       | Created — mock/live modes, local run, `pnpm verify`, Vercel deploy, API spec link, live URL                |
+| Vercel deploy     | Production Ready — https://sdd-navigator-sable.vercel.app (aliases on `*-alexey4717s-projects.vercel.app`) |
+| `PROCESS.md`      | All 7 sections finalized                                                                                   |
+| `docs/dev-log.md` | This entry                                                                                                 |
+
+### Deploy notes
+
+- Git remote: `git@github.com:Alexey4717/sdd-navigator.git`
+- Global `vercel` CLI 41.1.0 failed (requires ≥ 47.2.2)
+- Successful: `npx vercel@latest deploy --prod -y --no-wait` (CLI 54.18.0); device OAuth during npx session
+- Project linked: `alexey4717s-projects/sdd-navigator` (`.vercel/` gitignored)
+- Deployment: `dpl_GSXb4RCVkm3isA7giEZ7o3fiEti5`; HTTP 200 on production alias
+
+### SCD-DEPLOY-001
+
+- Live URL in README satisfies requirement semantically
+- `@req SCD-DEPLOY-001` on `scripts/check-coverage.ts` (check-coverage does not scan markdown)
+
+### Verification
+
+| Check                     | Result                                                  |
+| ------------------------- | ------------------------------------------------------- |
+| Pre-deploy `pnpm verify`  | PASS — 55 tests, 17/17 @req, build OK                   |
+| Post-change `pnpm verify` | PASS — typecheck, lint, 55 tests, check-coverage, build |
+| Live site                 | HTTP 200 — https://sdd-navigator-sable.vercel.app       |
+
+No `git` commit made (left for user review).
+
+---
