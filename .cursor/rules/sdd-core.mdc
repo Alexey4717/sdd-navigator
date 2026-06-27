@@ -1,0 +1,51 @@
+---
+description: SDD four pillars — always apply to every file in this project
+alwaysApply: true
+---
+
+# SDD Core Rules
+
+## Four Pillars
+
+- **Traceability**: every behavior and test must cite `@req SCD-XXX-NNN`.
+- **DRY**: types defined once in `lib/api/types.ts`; logic in `lib/coverage.ts`. Import, never duplicate.
+- **Deterministic Enforcement**: `pnpm verify` = typecheck + lint + test + check-coverage + build. Must stay green.
+- **Parsimony**: no unjustified deps, no boilerplate comments, no over-abstraction.
+
+## Traceability — `@req` annotation
+
+```ts
+// @req SCD-FLT-001
+export function filterRequirements(reqs: Requirement[], f: Filter) { ... }
+```
+
+Every public behavior in `lib/`, `app/`, `components/` needs one. Every test file first line.
+
+## No `any`
+
+```ts
+// ❌ BAD
+function parse(data: any) { ... }
+
+// ✅ GOOD
+function parse(data: unknown): Result<Stats, ApiError> { ... }
+```
+
+## No Duplicated Types / Logic
+
+```ts
+// ❌ BAD — redefining a type already in lib/api/types.ts
+type Requirement = { id: string; status: string };
+
+// ✅ GOOD
+import type { Requirement } from '@/lib/api/types';
+```
+
+## Commit Format
+
+```
+feat(table): URL-synced filters [SCD-FLT-002]
+fix(api): handle malformed JSON response [SCD-API-003]
+```
+
+Pattern: `type(scope): message [SCD-XXX-NNN]`

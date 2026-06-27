@@ -1,0 +1,49 @@
+---
+description: Test conventions — Vitest + RTL, @req traceability, behavior-first
+globs: "**/*.test.{ts,tsx}"
+alwaysApply: false
+---
+
+# Test Rules
+
+## Stack
+
+Vitest + React Testing Library + jsdom. Do not use Jest or Enzyme.
+
+## Traceability — first line
+
+Every test file must start with `// @req SCD-XXX-NNN` citing the requirement under test.
+
+```ts
+// @req SCD-FLT-001
+import { filterRequirements } from '@/lib/coverage';
+
+describe('filterRequirements', () => {
+  it('returns only FR requirements when type filter is FR', () => { ... });
+});
+```
+
+## Test behavior, not implementation
+
+```ts
+// ✅ GOOD — tests observable output
+expect(screen.getByRole('cell', { name: 'SCD-API-001' })).toBeInTheDocument();
+
+// ❌ BAD — tests internal state
+expect(component.state.filter).toEqual({ type: 'FR' });
+```
+
+## Coverage of edge cases
+
+Each data-layer test file must cover: valid input, malformed input, empty list, orphan detection.
+Each component test must cover: renders correctly, filters/sorts correctly, empty state.
+
+## No `any` in tests
+
+```ts
+// ❌ BAD
+const result = parseStats(data as any);
+
+// ✅ GOOD
+const result = parseStats(data as unknown as Stats);
+```

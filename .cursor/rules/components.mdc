@@ -1,0 +1,58 @@
+---
+description: React component conventions — RSC vs client, CSS Modules, a11y, responsive
+globs: "{app,components}/**/*.tsx"
+alwaysApply: false
+---
+
+# Component Rules
+
+## RSC vs Client boundary
+
+Use React Server Components for data fetching. Add `'use client'` only for interactivity (event handlers, state, effects).
+
+```tsx
+// ✅ GOOD — RSC fetches, passes data down
+// app/page.tsx (server)
+export default async function Page() {
+  const result = await getStats();
+  return <SummaryPanel stats={result} />;
+}
+
+// ✅ GOOD — client only for interaction
+'use client';
+export function FilterChips({ onChange }: Props) { ... }
+
+// ❌ BAD — 'use client' on a data-loading component
+'use client';
+export default async function Page() { ... }
+```
+
+## Styling — CSS Modules + theme variables
+
+```tsx
+// ✅ GOOD
+import styles from './SummaryPanel.module.css';
+<div className={styles.panel}>...</div>
+```
+
+Theme colors via CSS variables defined in `app/globals.css`:
+`--color-bg`, `--color-text`, `--color-accent`. Never hardcode hex in components.
+
+## Accessibility
+
+- Use semantic HTML: `<table>`, `<thead>`, `<th scope="col">`, `<button>`, `<nav>`.
+- Sortable columns: `<th aria-sort="ascending">`.
+- Keyboard navigation on table rows: `tabIndex={0}` + `onKeyDown` for Enter/Space.
+- Contrast: WCAG AA (≥4.5:1 normal text, ≥3:1 large) in both light and dark themes.
+
+## Responsive layout
+
+Desktop: `<table>` layout. Mobile (`max-width: 640px`): card layout via CSS only — no JS breakpoint detection.
+
+```css
+/* components/RequirementsTable.module.css */
+@media (max-width: 640px) {
+  thead { display: none; }
+  tr { display: block; margin-bottom: 1rem; }
+}
+```

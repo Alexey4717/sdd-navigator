@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": "node .cursor/hooks/format-fix.mjs",
+        "matcher": "Write"
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "node .cursor/hooks/guard.mjs",
+        "failClosed": true
+      }
+    ],
+    "subagentStop": [
+      {
+        "command": "node .cursor/hooks/gate.mjs",
+        "loop_limit": 1
+      }
+    ],
+    "stop": [
+      {
+        "command": "node .cursor/hooks/remind.mjs"
+      }
+    ]
+  }
+}

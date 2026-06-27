@@ -1,0 +1,56 @@
+---
+description: Data layer conventions for lib/ — types, errors, providers, coverage logic
+globs: lib/**/*.ts
+alwaysApply: false
+---
+
+# Data Layer Rules
+
+## Types — single source of truth
+
+Types come from `lib/api/types.ts` (generated via `pnpm gen:types` from `spec/sdd-coverage-api.yaml`).
+Never write domain types by hand; never copy-paste them into components.
+
+```ts
+// ✅ GOOD
+import type { Requirement, Stats } from '@/lib/api/types';
+
+// ❌ BAD — hand-rolled duplicate
+type Req = { id: string; status: 'covered' | 'missing' };
+```
+
+## Errors — Result, never throw
+
+```ts
+// ✅ GOOD
+async function getStats(): Promise<Result<Stats, ApiError>> {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return { ok: false, error: { kind: 'http', message: res.statusText } };
+    return { ok: true, data: await res.json() };
+  } catch (e) {
+    return { ok: false, error: { kind: 'network', message: String(e) } };
+  }
+}
+
+// ❌ BAD
+async function getStats(): Promise<Stats> {
+  const res = await fetch(url); // throws on network error
+  return res.json();
+}
+```
+
+## DataProvider interface
+
+All providers (`mock.ts`, `live.ts`) must implement the single `DataProvider` interface from `lib/api/provider.ts`.
+Selection in `lib/api/index.ts` based on `NEXT_PUBLIC_API_URL`.
+
+## Filter / sort / assess — lib/coverage.ts only
+
+```ts
+// ✅ GOOD
+import { filterRequirements, sortBy, assess } from '@/lib/coverage';
+
+// ❌ BAD — inline duplicate filter
+const filtered = reqs.filter(r => r.status === 'covered');
+```
