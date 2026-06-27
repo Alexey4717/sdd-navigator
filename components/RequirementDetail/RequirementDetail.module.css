@@ -1,0 +1,16 @@
+.article {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .article {
+    padding: 1rem;
+    gap: 1.25rem;
+  }
+}

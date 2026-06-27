@@ -10,14 +10,15 @@
 - Cursor Agent (composer-2.5-fast) — SA1 Scaffolding
 -->
 
-| Step | Model / Tool                      | Purpose                                                                                         |
-| ---- | --------------------------------- | ----------------------------------------------------------------------------------------------- |
-| SA0  | claude-4.6-sonnet-medium-thinking | Cursor tooling setup (rules, hooks, subagents, docs)                                            |
-| SA1  | composer-2.5-fast                 | Next.js scaffold + Vitest/Prettier/tooling config; verify green                                 |
-| SA2  | claude-4.6-sonnet-medium-thinking | Spec artifacts + mock data (requirements.yaml, data/\*.json, lib/api/types.ts)                  |
-| SA3  | claude-opus-4-8-thinking-high     | Data layer (errors/Result, coverage.ts, DataProvider, mock + live providers, index)             |
-| SA4  | claude-4.6-sonnet-medium-thinking | SummaryPanel RSC, ThemeToggle client component, anti-FOUC script, page + layout                 |
-| SA5  | claude-opus-4-8-thinking-high     | RequirementsTable (RSC) + FilterChips (client), URL-synced filters/sort, a11y, responsive cards |
+| Step | Model / Tool                      | Purpose                                                                                               |
+| ---- | --------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| SA0  | claude-4.6-sonnet-medium-thinking | Cursor tooling setup (rules, hooks, subagents, docs)                                                  |
+| SA1  | composer-2.5-fast                 | Next.js scaffold + Vitest/Prettier/tooling config; verify green                                       |
+| SA2  | claude-4.6-sonnet-medium-thinking | Spec artifacts + mock data (requirements.yaml, data/\*.json, lib/api/types.ts)                        |
+| SA3  | claude-opus-4-8-thinking-high     | Data layer (errors/Result, coverage.ts, DataProvider, mock + live providers, index)                   |
+| SA4  | claude-4.6-sonnet-medium-thinking | SummaryPanel RSC, ThemeToggle client component, anti-FOUC script, page + layout                       |
+| SA5  | claude-opus-4-8-thinking-high     | RequirementsTable (RSC) + FilterChips (client), URL-synced filters/sort, a11y, responsive cards       |
+| SA6  | composer-2.5-fast (ui-engineer)   | Requirement detail route + RequirementDetail component tree, back-link filter preservation, not-found |
 
 ## 2. Conversation Log
 
@@ -31,19 +32,21 @@
 | SA3  | Data layer                       | Build errors.ts (Result/ApiError, no throw), lib/coverage.ts (filter/sort/assess/orphan/computeStats), DataProvider interface, mock (fs) + live (fetch) providers, index.ts (env-based selection)                                         | All 6 files accepted; typecheck/lint green; smoke check confirmed coverage 62.5, 8 reqs, orphans detected | —                                                                             |
 | SA4  | Summary panel + theme            | SummaryPanel RSC (prop-based), ThemeToggle (useSyncExternalStore + custom event), anti-FOUC in layout head, page error/success state, loading skeleton                                                                                    | All deliverables; typecheck/lint/build green                                                              | ThemeToggle setState-in-effect lint error; replaced with useSyncExternalStore |
 | SA5  | Requirements table + filters     | RequirementsTable (RSC, sortable headers, responsive cards, empty state), FilterChips (client multi-select), URL-as-source-of-truth via lib/url-filters.ts, multi-select filter/sort via coverage.ts, wire into page (await searchParams) | All deliverables; typecheck/lint/build green; `/` dynamic                                                 | —                                                                             |
+| SA6  | Requirement detail               | Route `app/requirements/[id]` (RSC), RequirementDetail SRP split (meta, annotations, tasks, back link), `notFound` + `not-found.tsx`, `assessCoverage` label, reuse StatusBadge, preserve filters on back via url-filters                 | All deliverables; typecheck/lint/build green; smoke FR-SCAN-001 / NOPE-999 / back `?type=FR`              | —                                                                             |
 
 ## 3. Timeline
 
 <!-- Append start/end after each step. -->
 
-| Step | Start                            | End                              | Notes                                                                                      |
-| ---- | -------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------ |
-| SA0  | 2026-06-27 ~16:12 local (UTC+10) | 2026-06-27 ~16:30 local (UTC+10) | Cursor tooling: rules, hooks, subagents, process docs                                      |
-| SA1  | 2026-06-27 ~16:31 local (UTC+10) | 2026-06-27 ~18:05 local (UTC+10) | User installed Next/ESLint/TS; dev deps added; `pnpm verify` green                         |
-| SA2  | 2026-06-27 ~17:50 local (UTC+10) | 2026-06-27 ~18:20 local (UTC+10) | spec/; requirements.yaml; data/\*.json; gen:types; lib/api/types.ts; typecheck green       |
-| SA3  | 2026-06-27 ~18:32 local (UTC+10) | 2026-06-27 ~18:48 local (UTC+10) | errors/Result; coverage.ts; DataProvider; mock+live; index; typecheck/lint green; smoke OK |
-| SA4  | 2026-06-27 ~18:55 local (UTC+10) | 2026-06-27 ~19:10 local (UTC+10) | SummaryPanel + ThemeToggle + layout; typecheck/lint/build green                            |
-| SA5  | 2026-06-27 ~20:27 local (UTC+10) | 2026-06-27 ~20:45 local (UTC+10) | RequirementsTable + FilterChips + url-filters; URL-synced; typecheck/lint/build green      |
+| Step | Start                            | End                              | Notes                                                                                        |
+| ---- | -------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------- |
+| SA0  | 2026-06-27 ~16:12 local (UTC+10) | 2026-06-27 ~16:30 local (UTC+10) | Cursor tooling: rules, hooks, subagents, process docs                                        |
+| SA1  | 2026-06-27 ~16:31 local (UTC+10) | 2026-06-27 ~18:05 local (UTC+10) | User installed Next/ESLint/TS; dev deps added; `pnpm verify` green                           |
+| SA2  | 2026-06-27 ~17:50 local (UTC+10) | 2026-06-27 ~18:20 local (UTC+10) | spec/; requirements.yaml; data/\*.json; gen:types; lib/api/types.ts; typecheck green         |
+| SA3  | 2026-06-27 ~18:32 local (UTC+10) | 2026-06-27 ~18:48 local (UTC+10) | errors/Result; coverage.ts; DataProvider; mock+live; index; typecheck/lint green; smoke OK   |
+| SA4  | 2026-06-27 ~18:55 local (UTC+10) | 2026-06-27 ~19:10 local (UTC+10) | SummaryPanel + ThemeToggle + layout; typecheck/lint/build green                              |
+| SA5  | 2026-06-27 ~20:27 local (UTC+10) | 2026-06-27 ~20:45 local (UTC+10) | RequirementsTable + FilterChips + url-filters; URL-synced; typecheck/lint/build green        |
+| SA6  | 2026-06-27 ~21:00 local (UTC+10) | 2026-06-27 ~21:20 local (UTC+10) | Requirement detail route + components; back-link preserves query; typecheck/lint/build green |
 
 ## 4. Key Decisions
 
@@ -66,6 +69,9 @@
 - **SA5**: Multi-select filtering done client-of-API-agnostic: fetch the full list, then apply `filterRequirements`/`sortRequirements` from `lib/coverage.ts` (REST API only supports single type/status) — uniform for mock/live, no duplicated logic.
 - **SA5**: Sort controls are real `<a>` links carrying the toggled query (keyboard-focusable + shareable, no JS); FilterChips uses `router.replace(..., { scroll:false })` to avoid history spam and scroll jumps.
 - **SA5**: Status shown as color dot + text label (never color-only); responsive desktop-table/mobile-cards is CSS-only via `td::before { content: attr(data-label) }`, no JS breakpoint detection.
+- **SA6**: Detail route is RSC-only (no client boundary); filter preservation on back link reuses `parseTableState` + `currentQuery` from `lib/url-filters.ts` — same DRY path as table row links.
+- **SA6**: `StatusBadge` imported cross-component from RequirementsTable (no duplicate status UI); coverage assessment label from `assessCoverage` in `lib/coverage.ts`.
+- **SA6**: Annotation snippets rendered as React text children in `<code>` (auto HTML-escape, no `dangerouslySetInnerHTML`).
 
 ## 5. What the Developer Controlled
 

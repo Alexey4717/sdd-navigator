@@ -19,6 +19,7 @@ import type {
   Stats,
   Task,
 } from './types';
+import { DATA_REVALIDATE_SECONDS } from '../revalidate';
 
 async function request<T>(
   baseUrl: string,
@@ -27,7 +28,10 @@ async function request<T>(
 ): Promise<Result<T>> {
   let res: Response;
   try {
-    res = await fetch(`${baseUrl}${path}`, init);
+    res = await fetch(`${baseUrl}${path}`, {
+      ...init,
+      next: { revalidate: DATA_REVALIDATE_SECONDS, ...init?.next },
+    });
   } catch (e) {
     return err('network', `Network request failed for ${path}: ${String(e)}`);
   }

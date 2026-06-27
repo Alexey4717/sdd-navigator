@@ -33,6 +33,20 @@ function toRawArray(value: string | string[] | undefined): string[] {
   return Array.isArray(value) ? value : [value];
 }
 
+// @req SCD-FLT-002
+// Map client `useSearchParams()` (or any URLSearchParams) to the RSC RawSearchParams
+// shape so BackLink and FilterChips share the same parseTableState path.
+export function rawSearchParamsFromUrl(
+  searchParams: Pick<URLSearchParams, 'keys' | 'getAll'>,
+): RawSearchParams {
+  const raw: RawSearchParams = {};
+  for (const key of new Set(searchParams.keys())) {
+    const values = searchParams.getAll(key);
+    raw[key] = values.length > 1 ? values : values[0];
+  }
+  return raw;
+}
+
 function keepValid<T extends string>(
   raw: readonly string[],
   allowed: readonly T[],

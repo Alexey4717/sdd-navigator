@@ -653,3 +653,95 @@ URL remains the single source of truth; no client React state for filters. `@req
 No `git` commit made (left for user review).
 
 ---
+
+## SA6 — Requirement detail
+
+**Date**: 2026-06-27
+
+### Prompt (summary)
+
+Implement SA6: route `app/requirements/[id]/page.tsx` (RSC), split `RequirementDetail` component tree (meta, annotations, tasks, back link), optional `not-found.tsx`, CSS Modules + a11y. Preserve table filters on back link via `parseTableState` / `currentQuery`. `@req`: SCD-DET-001, SCD-A11Y-001, SCD-STATE-001. Verify typecheck/lint/build; smoke FR-SCAN-001 / NOPE-999 / back link with `?type=FR`. No commit.
+
+### Deliverables
+
+| File                                                       | Purpose                                                                                                                                                           |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/requirements/[id]/page.tsx`                           | RSC: `getRequirement(id)`, `notFound()` on `not_found`, `DataError` for other errors, passes `backQuery` from `currentQuery(parseTableState(await searchParams))` |
+| `app/requirements/[id]/not-found.tsx`                      | Accessible 404 for unknown requirement ID                                                                                                                         |
+| `components/RequirementDetail/RequirementDetail.tsx`       | Main layout (`article`)                                                                                                                                           |
+| `components/RequirementDetail/components/RequirementMeta/` | All requirement fields + `assessCoverage` label + reused `StatusBadge`                                                                                            |
+| `components/RequirementDetail/components/AnnotationsList/` | Linked annotations: file, line, type, snippet in `<pre><code>` (React text — auto-escaped)                                                                        |
+| `components/RequirementDetail/components/TasksList/`       | Linked tasks table (responsive cards on mobile)                                                                                                                   |
+| `components/RequirementDetail/components/BackLink/`        | `← Back to requirements` → `/${query}`                                                                                                                            |
+
+### Back-link filter preservation
+
+Table row links use `currentQuery(state)` → `/requirements/{id}?type=FR`. Detail page reads the same query via `await searchParams`, parses with `parseTableState`, serializes back with `currentQuery` → back link `href="/?type=FR"`. DRY: single mapping in `lib/url-filters.ts`.
+
+### `@req` mapping
+
+| ID            | Where                                                                                                                             |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| SCD-DET-001   | `page.tsx`, `RequirementDetail`, `RequirementMeta`, `AnnotationsList`, `TasksList`, `BackLink`                                    |
+| SCD-A11Y-001  | Semantic sections (`article`, `header`, `section`, `table`, `nav`), keyboard-focusable links, status dot + text via `StatusBadge` |
+| SCD-STATE-001 | `page.tsx` (`notFound`, `DataError`), `not-found.tsx`                                                                             |
+
+### Verification
+
+| Check                               | Result                                                 |
+| ----------------------------------- | ------------------------------------------------------ |
+| `/requirements/FR-SCAN-001`         | Title, Fully covered, 3 annotations, 1 task (TASK-001) |
+| `/requirements/NOPE-999`            | Custom “Requirement not found” not-found page          |
+| `/requirements/FR-SCAN-001?type=FR` | Back link `href="/?type=FR"`                           |
+| `pnpm typecheck`                    | PASS                                                   |
+| `pnpm lint`                         | PASS (3 pre-existing hook warnings)                    |
+| `pnpm build`                        | PASS (`/requirements/[id]` dynamic)                    |
+
+No `git` commit made (left for user review).
+
+---
+
+## SA6 follow-up — Requirement detail ISR
+
+**Date**: 2026-06-27
+
+### Prompt (summary)
+
+Remove dynamic SSR side effect on `/requirements/[id]` while keeping back-link filter preservation. Move back-link query handling to the client; enable ISR with `revalidate` + `generateStaticParams`. Align live `fetch` cache with revalidate interval.
+
+### Problem
+
+Initial SA6 read `await searchParams` on the RSC page only to build `backQuery` for `BackLink`. That forced **dynamic SSR on every request** even though requirement content depends only on `params.id`. Build output: `ƒ /requirements/[id] dynamic`.
+
+### Changes
+
+| File                                                            | Change                                                                                                                                               |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/requirements/[id]/page.tsx`                                | Removed `searchParams`; added `export const revalidate = 300` (literal — Next.js requirement) and `generateStaticParams()` from `listRequirements()` |
+| `components/RequirementDetail/components/BackLink/BackLink.tsx` | `'use client'`: `useSearchParams()` + `parseTableState` / `currentQuery`; exported `BackLinkFallback` for Suspense                                   |
+| `components/RequirementDetail/RequirementDetail.tsx`            | Dropped `backQuery` prop; `<Suspense fallback={<BackLinkFallback />}>` around `BackLink`                                                             |
+| `lib/url-filters.ts`                                            | Added `rawSearchParamsFromUrl()` — maps `URLSearchParams` (incl. multi-value `type`/`status`) to `RawSearchParams`                                   |
+| `lib/revalidate.ts`                                             | `DATA_REVALIDATE_SECONDS = 300` for live provider (page segment keeps literal `300`)                                                                 |
+| `lib/api/live.ts`                                               | `fetch(..., { next: { revalidate: DATA_REVALIDATE_SECONDS } })`                                                                                      |
+
+### Back-link filter preservation (unchanged UX)
+
+Table row links still append `currentQuery(state)` → `/requirements/{id}?type=FR`. Client `BackLink` reads the same query from the URL and builds `href="/?type=FR"`. DRY path unchanged: `rawSearchParamsFromUrl` → `parseTableState` → `currentQuery`.
+
+### Caching notes
+
+- **Full Route Cache (ISR)**: server skips re-render within 5m; visible in production build as `● /requirements/[id]  Revalidate 5m`.
+- **Router Cache**: soft navigation via `<Link>` may skip RSC fetch for ~5m (`x-nextjs-stale-time: 300`); hard reload (F5, address bar) still shows a network request (`Cache-Control: no-store`) but can be `x-nextjs-cache: HIT`.
+- **`pnpm dev`**: ISR and Full Route Cache do not apply — every request re-renders; test with `pnpm build && pnpm start`.
+
+### Verification
+
+| Check                               | Result                                                                                                    |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `/requirements/FR-SCAN-001?type=FR` | Back link `href="/?type=FR"` after hydration                                                              |
+| `pnpm verify`                       | PASS                                                                                                      |
+| `pnpm build`                        | PASS — `● /requirements/[id]` Revalidate 5m, 8 paths from `generateStaticParams`; `/` remains `ƒ` dynamic |
+
+No `git` commit made (left for user review).
+
+---
