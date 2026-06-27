@@ -10,16 +10,17 @@
 - Cursor Agent (composer-2.5-fast) — SA1 Scaffolding
 -->
 
-| Step | Model / Tool                      | Purpose                                                                                               |
-| ---- | --------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| SA0  | claude-4.6-sonnet-medium-thinking | Cursor tooling setup (rules, hooks, subagents, docs)                                                  |
-| SA1  | composer-2.5-fast                 | Next.js scaffold + Vitest/Prettier/tooling config; verify green                                       |
-| SA2  | claude-4.6-sonnet-medium-thinking | Spec artifacts + mock data (requirements.yaml, data/\*.json, lib/api/types.ts)                        |
-| SA3  | claude-opus-4-8-thinking-high     | Data layer (errors/Result, coverage.ts, DataProvider, mock + live providers, index)                   |
-| SA4  | claude-4.6-sonnet-medium-thinking | SummaryPanel RSC, ThemeToggle client component, anti-FOUC script, page + layout                       |
-| SA5  | claude-opus-4-8-thinking-high     | RequirementsTable (RSC) + FilterChips (client), URL-synced filters/sort, a11y, responsive cards       |
-| SA6  | composer-2.5-fast (ui-engineer)   | Requirement detail route + RequirementDetail component tree, back-link filter preservation, not-found |
-| SA7  | composer-2.5-fast (ui-engineer)   | TasksPanel + OrphanPanel, parallel fetch on home page, client task status filter, coverage.ts orphans |
+| Step | Model / Tool                                      | Purpose                                                                                               |
+| ---- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| SA0  | claude-4.6-sonnet-medium-thinking                 | Cursor tooling setup (rules, hooks, subagents, docs)                                                  |
+| SA1  | composer-2.5-fast                                 | Next.js scaffold + Vitest/Prettier/tooling config; verify green                                       |
+| SA2  | claude-4.6-sonnet-medium-thinking                 | Spec artifacts + mock data (requirements.yaml, data/\*.json, lib/api/types.ts)                        |
+| SA3  | claude-opus-4-8-thinking-high                     | Data layer (errors/Result, coverage.ts, DataProvider, mock + live providers, index)                   |
+| SA4  | claude-4.6-sonnet-medium-thinking                 | SummaryPanel RSC, ThemeToggle client component, anti-FOUC script, page + layout                       |
+| SA5  | claude-opus-4-8-thinking-high                     | RequirementsTable (RSC) + FilterChips (client), URL-synced filters/sort, a11y, responsive cards       |
+| SA6  | composer-2.5-fast (ui-engineer)                   | Requirement detail route + RequirementDetail component tree, back-link filter preservation, not-found |
+| SA7  | composer-2.5-fast (ui-engineer)                   | TasksPanel + OrphanPanel, parallel fetch on home page, client task status filter, coverage.ts orphans |
+| SA8  | claude-4.6-sonnet-medium-thinking (test-engineer) | Vitest+RTL: 12 test files (55 tests), fixtures for malformed/empty data, lib + component coverage     |
 
 ## 2. Conversation Log
 
@@ -35,6 +36,7 @@
 | SA5  | Requirements table + filters     | RequirementsTable (RSC, sortable headers, responsive cards, empty state), FilterChips (client multi-select), URL-as-source-of-truth via lib/url-filters.ts, multi-select filter/sort via coverage.ts, wire into page (await searchParams) | All deliverables; typecheck/lint/build green; `/` dynamic                                                         | —                                                                             |
 | SA6  | Requirement detail               | Route `app/requirements/[id]` (RSC), RequirementDetail SRP split (meta, annotations, tasks, back link), `notFound` + `not-found.tsx`, `assessCoverage` label, reuse StatusBadge, preserve filters on back via url-filters                 | All deliverables; typecheck/lint/build green; smoke FR-SCAN-001 / NOPE-999 / back `?type=FR`                      | —                                                                             |
 | SA7  | Tasks panel + Orphan panel       | TasksPanel (status filter, orphan highlight, responsive table), OrphanPanel (collapsible details), wire into page with parallel fetch, reuse findOrphan\* / filterTasks from coverage.ts                                                  | All deliverables; client-side task status filter (not URL); typecheck/lint/build green; smoke 6 tasks + 3 orphans | Fixed pre-existing build break: revalidate literal 300 in detail page         |
+| SA8  | Vitest + RTL tests               | Data layer tests (mock/live/coverage/url-filters, fixtures for malformed JSON/empty/YAML); component tests (SummaryPanel, RequirementsTable, FilterChips, RequirementDetail, TasksPanel, OrphanPanel); `// @req` first line per file      | 12 test files, 55 tests; fixtures under tests/fixtures/; vitest-env.d.ts for tsc; test/lint/typecheck green       | Tests assert actual sortHref behavior (default order omitted from URL)        |
 
 ## 3. Timeline
 
@@ -50,6 +52,7 @@
 | SA5  | 2026-06-27 ~20:27 local (UTC+10) | 2026-06-27 ~20:45 local (UTC+10) | RequirementsTable + FilterChips + url-filters; URL-synced; typecheck/lint/build green        |
 | SA6  | 2026-06-27 ~21:00 local (UTC+10) | 2026-06-27 ~21:20 local (UTC+10) | Requirement detail route + components; back-link preserves query; typecheck/lint/build green |
 | SA7  | 2026-06-27 ~22:00 local (UTC+10) | 2026-06-27 ~22:25 local (UTC+10) | TasksPanel + OrphanPanel; client task filter; typecheck/lint/build green; smoke OK           |
+| SA8  | 2026-06-27 ~22:35 local (UTC+10) | 2026-06-27 ~22:45 local (UTC+10) | 12 test files, 55 Vitest+RTL tests; fixtures; typecheck/lint/test green                      |
 
 ## 4. Key Decisions
 
@@ -78,6 +81,10 @@
 - **SA7**: Task status filter is client-side local state (multi-select chips reusing `Chip`) — not URL-synced; requirements table already owns shareable query params and task filtering is secondary for SA7.
 - **SA7**: Orphan detection in UI uses `findOrphanAnnotations` / `findOrphanTasks` from `lib/coverage.ts` on full lists passed from page — DRY with mock stats and providers; orphan tasks highlighted inline in TasksPanel via `--warning` CSS var.
 - **SA7**: OrphanPanel uses native `<details>`/`<summary>` (collapsed by default, count badge on summary) — no JS accordion dependency (Parsimony).
+- **SA8**: Mock provider fixture injection via `createMockProvider(dataDir)` — no temp-dir copying; static fixtures under `tests/fixtures/` for error/empty edge cases.
+- **SA8**: Malformed YAML covered by `scripts/requirements-yaml.test.ts` with inline `parseYamlSafe` Result helper (SA9 prep) — `check-coverage.ts` not yet implemented.
+- **SA8**: One `@req` per test file (primary requirement under test); component tests mock `next/link` and `next/navigation` where needed; RSC components tested with props only.
+- **SA8**: Added `vitest-env.d.ts` triple-slash reference so `tsc --noEmit` recognizes Vitest globals (`describe`, `it`, `vi`, `expect`).
 
 ## 5. What the Developer Controlled
 

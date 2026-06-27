@@ -814,3 +814,61 @@ Client-side `TaskStatusFilter` reuses `Chip` from FilterChips; local React state
 No `git` commit made (left for user review).
 
 ---
+
+## SA8 — Tests
+
+**Start**: 2026-06-27 ~22:35 local (UTC+10)
+**End**: 2026-06-27 ~22:45 local (UTC+10)
+
+### Task summary
+
+Vitest + RTL test suite for data layer and UI components per plan SA8. Fixture dirs under `tests/fixtures/` for malformed JSON, empty arrays, empty files, and malformed YAML. Mock provider tests use `createMockProvider(dataDir)` DI from SA3.
+
+### Prompt (summary)
+
+Implement SA8 tests: data layer (valid/malformed/empty/orphan/coverage edge cases, live error mapping, url-filters) and components (SummaryPanel, RequirementsTable, FilterChips, RequirementDetail, TasksPanel, OrphanPanel). Every test file first line `// @req`. Run `pnpm test`, `pnpm typecheck`, `pnpm lint`. No commit.
+
+### Test files created (12 files, 55 tests)
+
+| File                                                           | Tests | `@req`       |
+| -------------------------------------------------------------- | ----- | ------------ |
+| `lib/coverage.test.ts`                                         | 16    | SCD-API-001  |
+| `lib/url-filters.test.ts`                                      | 10    | SCD-FLT-002  |
+| `lib/api/mock.test.ts`                                         | 8     | SCD-API-002  |
+| `lib/api/live.test.ts`                                         | 5     | SCD-API-003  |
+| `scripts/requirements-yaml.test.ts`                            | 2     | SCD-API-003  |
+| `components/SummaryPanel/SummaryPanel.test.tsx`                | 1     | SCD-SUM-001  |
+| `components/RequirementsTable/RequirementsTable.test.tsx`      | 3     | SCD-TBL-001  |
+| `components/RequirementsTable/RequirementsTable.sort.test.tsx` | 2     | SCD-SORT-001 |
+| `components/FilterChips/FilterChips.test.tsx`                  | 3     | SCD-FLT-001  |
+| `components/RequirementDetail/RequirementDetail.test.tsx`      | 1     | SCD-DET-001  |
+| `components/TasksPanel/TasksPanel.test.tsx`                    | 3     | SCD-TASK-001 |
+| `components/OrphanPanel/OrphanPanel.test.tsx`                  | 2     | SCD-ORPH-001 |
+
+Supporting artifacts: `tests/fixtures/{malformed,empty,empty-file,malformed-yaml}/`, `vitest-env.d.ts` (Vitest globals for `tsc`).
+
+### Fixture strategy
+
+- **Valid data**: point `createMockProvider` at repo `data/` (62.5% coverage, 8/16/6 counts, known orphans).
+- **Malformed JSON**: `tests/fixtures/malformed/requirements.json` → `err('malformed')`, no throw.
+- **Empty arrays**: `tests/fixtures/empty/*.json` → `ok([])` / zero stats.
+- **Empty file**: whitespace-only `requirements.json` → `err('malformed', '…empty')`.
+- **Malformed YAML**: `tests/fixtures/malformed-yaml/bad.yaml` + inline `parseYamlSafe` Result helper (SA9 prep; `check-coverage.ts` still placeholder).
+
+### What was accepted
+
+- All 55 tests pass; typecheck and lint green on new files.
+- Component tests use RTL accessible queries; `next/link` and `next/navigation` mocked where needed.
+- RSC components tested via props (no async page wrappers).
+
+### Verification
+
+| Check            | Result                              |
+| ---------------- | ----------------------------------- |
+| `pnpm test`      | PASS — 12 files, 55 tests           |
+| `pnpm typecheck` | PASS                                |
+| `pnpm lint`      | PASS (3 pre-existing hook warnings) |
+
+No `git` commit made (left for user review).
+
+---

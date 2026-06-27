@@ -1,0 +1,7 @@
+{
+  "requirements": { "total": 0, "byType": {}, "byStatus": {} },
+  "annotations": { "total": 0, "impl": 0, "test": 0, "orphans": 0 },
+  "tasks": { "total": 0, "byStatus": {}, "orphans": 0 },
+  "coverage": 0,
+  "lastScanAt": "2026-01-01T00:00:00Z"
+}
