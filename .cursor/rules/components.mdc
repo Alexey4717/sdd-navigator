@@ -15,17 +15,75 @@ Use React Server Components for data fetching. Add `'use client'` only for inter
 // app/page.tsx (server)
 export default async function Page() {
   const result = await getStats();
-  return <SummaryPanel stats={result} />;
+  if (!result.ok) return <DataError message={result.error.message} />;
+  return <SummaryPanel stats={result.data} />;
 }
 
-// ✅ GOOD — client only for interaction
+// ✅ GOOD — client component in components/
 'use client';
-export function FilterChips({ onChange }: Props) { ... }
+export const FilterChips = ({ onChange }: FilterChipsProps) => { ... };
 
-// ❌ BAD — 'use client' on a data-loading component
+// ❌ BAD — 'use client' on a data-loading page
 'use client';
 export default async function Page() { ... }
 ```
+
+## Component style — arrow functions + named exports
+
+**Default for all components** (RSC and `'use client'` alike): `export const ComponentName = (...) => { ... }`. No `export default`, no `function ComponentName()`.
+
+Applies to every file under `components/`. `'use client'` does not change this rule — it only marks the client boundary.
+
+Helper functions outside the component (e.g. `formatDate`, `toSize`, `subscribe`) may stay as `function` declarations.
+
+```tsx
+// ✅ GOOD — RSC
+export const SummaryPanel = ({ stats }: SummaryPanelProps) => { ... };
+
+// ✅ GOOD — client
+'use client';
+export const ThemeToggle = () => { ... };
+
+// ❌ BAD
+export default function SummaryPanel() { ... }
+```
+
+Import with named imports:
+
+```tsx
+import { Skeleton } from '@/components/Skeleton/Skeleton';
+import { StatCard } from './components/StatCard/StatCard';
+```
+
+**Exception — Next.js route files only:** `app/page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx`, etc. must `export default` the route entry (framework requirement). Define the route component as an arrow `const`, then `export default RouteName` at the bottom if you prefer consistency inside the file.
+
+```tsx
+// ✅ GOOD — app/error.tsx
+'use client';
+const ErrorPage = ({ error, reset }: ErrorPageProps) => <DataError ... />;
+export default ErrorPage;
+```
+
+## Props interface naming
+
+Name the props interface `ComponentNameProps` — never bare `Props`.
+
+```tsx
+// ✅ GOOD
+interface SummaryPanelProps {
+  stats: Stats;
+}
+export const SummaryPanel = ({ stats }: SummaryPanelProps) => { ... };
+
+// ❌ BAD
+interface Props { stats: Stats; }
+```
+
+Same rule for route components in `app/` (`ErrorPageProps`, `HomePageProps`, etc.).
+
+## File layout — no barrel `index.ts`
+
+Each component lives in `components/<Name>/<Name>.tsx`. Import the file directly — no `index.ts` re-exports in `components/`.
 
 ## Styling — CSS Modules + theme variables
 

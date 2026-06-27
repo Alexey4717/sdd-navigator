@@ -1,0 +1,27 @@
+.skeleton {
+  display: block;
+  background: color-mix(in srgb, var(--border) 60%, transparent);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.rect {
+  border-radius: 0.375rem;
+}
+
+.text {
+  border-radius: 0.25rem;
+}
+
+.circle {
+  border-radius: 9999px;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}

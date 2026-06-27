@@ -16,6 +16,7 @@
 | SA1 | composer-2.5-fast | Next.js scaffold + Vitest/Prettier/tooling config; verify green |
 | SA2 | claude-4.6-sonnet-medium-thinking | Spec artifacts + mock data (requirements.yaml, data/*.json, lib/api/types.ts) |
 | SA3 | claude-opus-4-8-thinking-high | Data layer (errors/Result, coverage.ts, DataProvider, mock + live providers, index) |
+| SA4 | claude-4.6-sonnet-medium-thinking | SummaryPanel RSC, ThemeToggle client component, anti-FOUC script, page + layout |
 
 ## 2. Conversation Log
 
@@ -27,6 +28,7 @@
 | SA1 | Scaffolding & config (continued) | Finish SA1 configs without reinstall; user set package versions/PM manually | All config files accepted; lint script fixed for Next 16; dev deps installed; verify green | — |
 | SA2 | Spec artifacts and data | Download spec/sdd-coverage-api.yaml; author requirements.yaml (17 SCD IDs); create data/*.json (8 req/16 ann/6 tasks) with DRY-consistent stats; run gen:types; create lib/api/types.ts | All files accepted; DRY-consistency verified (all 16 metrics match); gen:types ran; typecheck green | — |
 | SA3 | Data layer | Build errors.ts (Result/ApiError, no throw), lib/coverage.ts (filter/sort/assess/orphan/computeStats), DataProvider interface, mock (fs) + live (fetch) providers, index.ts (env-based selection) | All 6 files accepted; typecheck/lint green; smoke check confirmed coverage 62.5, 8 reqs, orphans detected | — |
+| SA4 | Summary panel + theme | SummaryPanel RSC (prop-based), ThemeToggle (useSyncExternalStore + custom event), anti-FOUC in layout head, page error/success state, loading skeleton | All deliverables; typecheck/lint/build green | ThemeToggle setState-in-effect lint error; replaced with useSyncExternalStore |
 
 ## 3. Timeline
 
@@ -38,6 +40,7 @@
 | SA1 | 2026-06-27 ~16:31 local (UTC+10) | 2026-06-27 ~18:05 local (UTC+10) | User installed Next/ESLint/TS; dev deps added; `pnpm verify` green |
 | SA2 | 2026-06-27 ~17:50 local (UTC+10) | 2026-06-27 ~18:20 local (UTC+10) | spec/; requirements.yaml; data/*.json; gen:types; lib/api/types.ts; typecheck green |
 | SA3 | 2026-06-27 ~18:32 local (UTC+10) | 2026-06-27 ~18:48 local (UTC+10) | errors/Result; coverage.ts; DataProvider; mock+live; index; typecheck/lint green; smoke OK |
+| SA4 | 2026-06-27 ~18:55 local (UTC+10) | 2026-06-27 ~19:10 local (UTC+10) | SummaryPanel + ThemeToggle + layout; typecheck/lint/build green |
 
 ## 4. Key Decisions
 
@@ -54,6 +57,8 @@
 - **SA3**: One `DataProvider` interface for both mock and live; provider selection is isolated to `lib/api/index.ts` based on `NEXT_PUBLIC_API_URL` (mock is the dev default).
 - **SA3**: Mock provider reads `data/*.json` from a configurable base dir (default `<cwd>/data`) so SA8 fixtures can be injected without code changes.
 - **SA3**: Provider filter param types extend the shared coverage filter types (adding list-only `sort`/`order`) to keep the filter shape DRY across UI, providers, and tests.
+- **SA4**: Used `useSyncExternalStore` (not `useState+useEffect`) for ThemeToggle to satisfy `react-hooks/set-state-in-effect` lint rule; custom `sdd-theme-change` event bridges DOM mutation to React re-render.
+- **SA4**: Anti-FOUC script placed in `<head>` (not `<body>`) to guarantee execution before first paint in all browsers.
 
 ## 5. What the Developer Controlled
 
@@ -71,6 +76,8 @@
 | Step | Issue | Correction |
 |---|---|---|
 | SA1 | First SA1 attempt interrupted; user manually pinned versions and ran `pnpm install` (Next stack only) | Continued SA1 config-only; dev deps installed in follow-up session; verify green |
+| SA4 | React hydration mismatch on `<html data-theme>` — anti-FOUC script mutates the attribute pre-hydration, so client DOM differs from SSR HTML | Added `suppressHydrationWarning` to the `<html>` element only (canonical Next.js/React pattern); anti-FOUC approach unchanged. Verified via browser console capture — warning gone |
+| SA4 | Inline anti-FOUC `dangerouslySetInnerHTML`; flat components; default SVGs | Review refactor: split globals.css into app/styles/*; switched to next/script inline-children (beforeInteractive) — no FOUC; per-folder components + SummaryPanel SRP split; reusable Skeleton; deleted 5 unused public SVGs |
 
 ## 7. Self-Assessment (SDD Four Pillars)
 

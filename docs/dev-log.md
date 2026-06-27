@@ -263,3 +263,252 @@ All deliverables as specified. No `git` commit made (left for the user to review
 None.
 
 ---
+
+## SA4 — Summary panel + theme
+
+**Start**: 2026-06-27 ~18:55 local (UTC+10)
+**End**: 2026-06-27 ~19:10 local (UTC+10)
+
+### Task summary
+
+Implemented `SummaryPanel` RSC, `ThemeToggle` client component, anti-FOUC layout script, updated `app/page.tsx` + `app/layout.tsx`. Added `app/loading.tsx` with a pulse-skeleton.
+
+### Components created
+
+| File | Type | Purpose |
+|---|---|---|
+| `components/SummaryPanel.tsx` | RSC | Totals, byType, byStatus bars, coverage% progress, orphan warnings, lastScanAt |
+| `components/SummaryPanel.module.css` | CSS Module | Status bars, progress track, warning block, responsive grid |
+| `components/ThemeToggle.tsx` | Client Component | Toggles `data-theme` on `<html>`, persists in `localStorage` |
+| `components/ThemeToggle.module.css` | CSS Module | Pill button with focus-visible ring |
+| `app/layout.tsx` | Server layout | Anti-FOUC inline script in `<head>`, sticky nav with ThemeToggle |
+| `app/layout.module.css` | CSS Module | Sticky header, constrained main area |
+| `app/page.tsx` | RSC page | Calls `getStats()`, renders SummaryPanel or accessible error state |
+| `app/loading.tsx` | Next.js loading | Pulse-skeleton (SCD-STATE-001) |
+| `app/loading.module.css` | CSS Module | `@keyframes pulse` skeleton blocks |
+
+### RSC vs client boundary
+
+`SummaryPanel` is a pure RSC — receives `stats: Stats` as prop, no state/effects. `ThemeToggle` is the only `'use client'` component; uses `useSyncExternalStore` with a custom `sdd-theme-change` event to avoid `setState` inside `useEffect`. Layout and page remain Server Components.
+
+### Anti-FOUC approach
+
+Inline `<script dangerouslySetInnerHTML>` in `<head>` runs synchronously before first paint: reads `localStorage.theme`, falls back to `window.matchMedia('(prefers-color-scheme: dark)')`, sets `document.documentElement.dataset.theme`.
+
+### A11y / contrast notes
+
+All CSS variables in `globals.css` verified WCAG AA (≥4.5:1): foreground/background ~14–15:1; status-covered/partial/missing and warning colors pass in both themes. `SummaryPanel` uses `<section aria-labelledby>`, `<dl>`, `role="progressbar"` with `aria-valuenow/min/max`, `role="alert"` for orphan warnings. `ThemeToggle` has `aria-label` + `aria-pressed` + `focus-visible` outline.
+
+### @req mapping
+
+| @req | File(s) |
+|---|---|
+| `SCD-SUM-001` | `components/SummaryPanel.tsx`, `app/page.tsx` |
+| `SCD-A11Y-001` | `components/SummaryPanel.tsx` |
+| `SCD-RESP-001` | `components/SummaryPanel.tsx` |
+| `SCD-THEME-001` | `components/ThemeToggle.tsx`, `app/layout.tsx` |
+| `SCD-STATE-001` | `app/page.tsx`, `app/loading.tsx` |
+
+### Verification results
+
+| Check | Result |
+|---|---|
+| `pnpm typecheck` | PASS (strict, 0 errors) |
+| `pnpm lint` | PASS (0 errors; 3 pre-existing hook warnings only) |
+| `pnpm build` | PASS (Next.js 16.2.1, static `/` route) |
+
+### What was accepted
+
+All deliverables as specified. `useSyncExternalStore` + custom event chosen to avoid `react-hooks/set-state-in-effect` lint error.
+
+### What was rejected / corrected
+
+Initial `ThemeToggle` called `setTheme()` inside `useEffect` body — rejected by ESLint. Replaced with `useSyncExternalStore` + custom `sdd-theme-change` event subscription.
+
+No `git` commit made (left for user to review).
+
+---
+
+## SA4 — Hydration fix
+
+**Start**: 2026-06-27 ~19:32 local (UTC+10)
+**End**: 2026-06-27 ~19:40 local (UTC+10)
+
+### Symptom
+
+Dev server logged a React hydration mismatch on the home page:
+> A tree hydrated but some attributes of the server rendered HTML didn't match the client properties… `<html lang="en" data-theme="dark">`
+
+### Root cause
+
+The anti-FOUC bootstrap (`next/script`, `beforeInteractive`, inline children) sets `document.documentElement.dataset.theme` **before** hydration. The SSR HTML has no `data-theme` attribute, so the client `<html>` (now `data-theme="dark"`) no longer matches the server markup — React flags it. This is expected for an intentional pre-hydration theme attribute.
+
+### Fix
+
+Added `suppressHydrationWarning` to the `<html>` element only in `app/layout.tsx` — the canonical Next.js/React pattern for elements whose attributes are intentionally mutated before hydration. Anti-FOUC approach unchanged (still inline children + `beforeInteractive`, no `dangerouslySetInnerHTML`). The attribute is scoped to `<html>` only — not applied broadly.
+
+```tsx
+<html lang="en" suppressHydrationWarning>
+```
+
+### Verification
+
+Loaded the running dev server (localhost:3000) in a browser, injected a `console.error`/`console.warn` capture before page scripts (CDP `Page.addScriptToEvaluateOnNewDocument`), then reloaded to re-run hydration with `data-theme="dark"` applied pre-hydration. Captured **0** console errors/warnings, **0** hydration-related messages — the `data-theme` mismatch warning is gone. `pnpm typecheck` / `pnpm lint` (0 errors) / `pnpm build` all pass.
+
+No `git` commit made (left for user to review).
+
+---
+
+## SA4 — Review refactor
+
+**Start**: 2026-06-27 ~19:18 local (UTC+10)
+**End**: 2026-06-27 ~19:35 local (UTC+10)
+
+User-requested refactor of the SA4 deliverables. Six changes applied.
+
+### 1. globals.css split
+
+`app/globals.css` now contains only three ordered `@import`s. CSS extracted into `app/styles/`:
+- `reset.css` — box-sizing reset + html/body sizing/overflow.
+- `theme.css` — `:root` (light) + `[data-theme='dark']` CSS variables.
+- `base.css` — body typography/layout + anchor styles.
+
+Import order is reset → theme → base. `app/layout.tsx` still imports `./globals.css`.
+
+### 2. Anti-FOUC via next/script (decision + rationale)
+
+Replaced the raw `<script dangerouslySetInnerHTML>` with `next/script`'s `<Script id="theme-bootstrap" strategy="beforeInteractive">{…inline JS…}</Script>` (**inline children**, NOT external `src`).
+
+**Why not external `/scripts/theme-bootstrap.js`?** An external `src` with `beforeInteractive` is a separate network request that the browser may resolve *after* first paint, reintroducing FOUC. Inline children with `beforeInteractive` are inlined by Next into the initial HTML as a synchronous script placed at the start of `<body>`, before the header/panel DOM — so it executes before that content is painted. **Zero FOUC, fully declarative (no `dangerouslySetInnerHTML`).**
+
+Verified against the production build: `dataset.theme` script is present in `.next/server/app/index.html` at the start of `<body>` (pos before the "Coverage Summary" content). No `public/scripts/` file was created (parsimony).
+
+### 3. Reusable Skeleton component
+
+`components/Skeleton/` — props: `width?: string|number`, `height?: string|number`, `variant?: 'rect'|'text'|'circle'` (default `rect`), `className?`. Numbers are coerced to `px`. Renders an `aria-hidden` `<span>` with the pulse animation. `app/loading.tsx` now composes `<Skeleton>` instances; `loading.module.css` keeps only the container + grid layout (pulse animation moved into Skeleton).
+
+### 4. components/ reorganization (per-folder + SRP)
+
+Each component now lives in its own same-named folder with a barrel `index.ts` so `@/components/SummaryPanel` and `@/components/ThemeToggle` import paths are unchanged. `SummaryPanel` split into focused subcomponents under `SummaryPanel/components/`:
+
+```
+components/
+  Skeleton/{index.ts, Skeleton.tsx, Skeleton.module.css}
+  ThemeToggle/{index.ts, ThemeToggle.tsx, ThemeToggle.module.css}
+  SummaryPanel/
+    {index.ts, SummaryPanel.tsx, SummaryPanel.module.css}
+    components/
+      StatCard/{index.ts, StatCard.tsx, StatCard.module.css}
+      CoverageProgress/{index.ts, CoverageProgress.tsx, CoverageProgress.module.css}
+      StatusBreakdown/{index.ts, StatusBreakdown.tsx, StatusBreakdown.module.css}
+      OrphanWarning/{index.ts, OrphanWarning.tsx, OrphanWarning.module.css}
+```
+
+`OrphanWarning` self-hides (returns `null`) when both orphan counts are 0. `CoverageProgress` owns the `role="progressbar"` semantics; `StatusBreakdown` owns the status bars (internal `StatusBar` row helper). Old flat files (`components/SummaryPanel.tsx`, `SummaryPanel.module.css`, `ThemeToggle.tsx`, `ThemeToggle.module.css`) deleted.
+
+### 5. public/ asset audit
+
+Grepped the codebase for the create-next-app SVGs — zero references. Deleted all five: `file.svg`, `globe.svg`, `next.svg`, `vercel.svg`, `window.svg`. `public/` is now empty (no external bootstrap script needed).
+
+### @req mapping (preserved + moved with code)
+
+| @req | File(s) |
+|---|---|
+| `SCD-SUM-001` | `SummaryPanel.tsx`, `StatCard.tsx`, `CoverageProgress.tsx`, `StatusBreakdown.tsx`, `OrphanWarning.tsx`, `app/page.tsx` |
+| `SCD-A11Y-001` | `SummaryPanel.tsx`, `CoverageProgress.tsx`, `OrphanWarning.tsx` |
+| `SCD-RESP-001` | `SummaryPanel.tsx` |
+| `SCD-THEME-001` | `ThemeToggle.tsx`, `app/layout.tsx` |
+| `SCD-STATE-001` | `Skeleton.tsx`, `app/loading.tsx`, `app/page.tsx` |
+
+### Verification results
+
+| Check | Result |
+|---|---|
+| `pnpm typecheck` | PASS (0 errors) |
+| `pnpm lint` | PASS (0 errors; 3 pre-existing hook warnings) |
+| `pnpm build` | PASS (Next.js 16.2.1; theme script verified inlined in HTML) |
+
+No `git` commit made (left for user to review).
+
+---
+
+## SA4 — DataError + error boundary
+
+**Start**: 2026-06-27 ~20:00 local (UTC+10)
+**End**: 2026-06-27 ~20:10 local (UTC+10)
+
+### Task summary
+
+Extracted inline error UI from `app/page.tsx` into a reusable `DataError` client component. `page.tsx` still checks `Result` from `getStats()` (expected API failures). Added `app/error.tsx` as a Next.js error boundary safety net for unexpected thrown errors.
+
+### Architecture
+
+| Layer | Mechanism | When |
+|---|---|---|
+| `page.tsx` + `DataError` | Explicit `Result` check | Provider returns `{ ok: false, error }` |
+| `app/error.tsx` + `DataError` | Next.js error boundary | Uncaught throw during render |
+
+`error.tsx` does **not** replace `Result` handling — it catches only exceptions. Expected failures stay in the type system per SCD-API-003.
+
+### Files
+
+| File | Purpose |
+|---|---|
+| `components/DataError/DataError.tsx` | RSC alert UI: title + message (no interactivity) |
+| `components/DataError/DataError.module.css` | Shared styles for DataError and `app/error.tsx` |
+| `components/DataError/index.ts` | Barrel export |
+| `app/page.tsx` | `<DataError message={…} />` on failed `getStats()` |
+| `app/error.tsx` | Client error boundary; reuses DataError CSS + retry button |
+
+### @req mapping
+
+| @req | File(s) |
+|---|---|
+| `SCD-STATE-001` | `DataError.tsx`, `app/page.tsx`, `app/error.tsx` |
+| `SCD-A11Y-001` | `DataError.tsx` |
+
+### Verification results
+
+| Check | Result |
+|---|---|
+| `pnpm typecheck` | PASS |
+| `pnpm lint` | PASS |
+| `pnpm build` | PASS |
+
+No `git` commit made (left for user to review).
+
+---
+
+## Component conventions — arrow functions + direct imports
+
+**Start**: 2026-06-27 ~20:15 local (UTC+10)
+**End**: 2026-06-27 ~20:20 local (UTC+10)
+
+### Task summary
+
+Extended `.cursor/rules/components.mdc` with two conventions: client components (`'use client'`) use `const` arrow functions + `export default`; no barrel `index.ts` in `components/` — import `@/components/<Name>/<Name>` directly.
+
+### Rule changes
+
+| Convention | Scope | Rationale |
+|---|---|---|
+| Arrow function components | `'use client'` files only | Consistent client-component style; RSC keeps `function`/`async function` |
+| No `index.ts` barrels | `components/**` | Explicit import paths; one less indirection layer |
+
+`lib/api/index.ts` unchanged — provider selection barrel is intentional (data-layer rule).
+
+### Refactor applied
+
+- Deleted 8 `index.ts` barrels under `components/`.
+- Updated imports in `app/page.tsx`, `app/layout.tsx`, `app/loading.tsx`, `app/error.tsx`, `SummaryPanel.tsx`.
+- Converted `ThemeToggle.tsx` and `app/error.tsx` from `function` to arrow components.
+
+### Verification results
+
+| Check | Result |
+|---|---|
+| `pnpm verify` | PASS (typecheck, lint, build) |
+
+No `git` commit made (left for user to review).
+
+---
