@@ -59,3 +59,47 @@ None at this step.
 - Hook scripts sanity-checked: guard returns `ask` for `.env` commands, `allow` otherwise; gate no-ops with no `package.json`; remind emits reminder JSON.
 
 ---
+
+## SA1 — Scaffolding & config
+
+**Start**: 2026-06-27 ~16:31 local (UTC+10)
+**End**: 2026-06-27 ~18:05 local (UTC+10)
+
+### Task summary
+
+Finish Next.js App Router scaffolding and tooling config after an interrupted first attempt. User manually set package versions (`next@16.2.1`, `pnpm@10.33.0`) and ran `pnpm install` successfully (Next + ESLint + TypeScript only).
+
+### What was already present (skipped)
+
+| Item | Status |
+|---|---|
+| `tsconfig.json` | `strict: true`, `noUncheckedIndexedAccess: true`, `@/*` alias |
+| `vitest.config.ts` / `vitest.setup.ts` | jsdom, globals, react plugin, jest-dom setup |
+| `.prettierrc` | `{ singleQuote, semi }` |
+| `app/globals.css` | Light/dark CSS variables, WCAG AA contrast, `color-scheme` |
+| `scripts/check-coverage.ts` | SA9 placeholder, exits 0 |
+| `package.json` scripts | dev/build/start/typecheck/test/gen:types/check-coverage/verify |
+| `.gitignore` | `node_modules`, `.next` covered |
+
+### What was changed
+
+- `package.json` `lint` script: `next lint` → `eslint .` (Next.js 16 removed the `lint` subcommand; `next lint` was mis-parsed as a directory).
+
+### Dev dependencies installed
+
+Added via `pnpm add -D`: `vitest`, `@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event`, `jsdom`, `@vitejs/plugin-react`, `openapi-typescript`, `tsx`, `yaml`, `prettier`.
+
+No config fixes required — existing vitest/eslint/tsconfig setup worked as-is.
+
+### Verification
+
+| Command | Result |
+|---|---|
+| `pnpm typecheck` | PASS |
+| `pnpm lint` | PASS (3 warnings in `.cursor/hooks/*.mjs`, exit 0) |
+| `pnpm test` | PASS (passWithNoTests, no test files yet) |
+| `pnpm check-coverage` | PASS (SA9 placeholder, exit 0) |
+| `pnpm build` | PASS |
+| `pnpm verify` | PASS |
+
+---

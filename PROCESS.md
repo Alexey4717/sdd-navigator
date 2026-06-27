@@ -13,6 +13,7 @@
 | Step | Model / Tool | Purpose |
 |---|---|---|
 | SA0 | claude-4.6-sonnet-medium-thinking | Cursor tooling setup (rules, hooks, subagents, docs) |
+| SA1 | composer-2.5-fast | Next.js scaffold + Vitest/Prettier/tooling config; verify green |
 
 ## 2. Conversation Log
 
@@ -21,6 +22,7 @@
 | Step | Topic | Prompt summary | What was accepted | What was rejected / corrected |
 |---|---|---|---|---|
 | SA0 | Cursor tooling setup | Create .cursor/rules/*.mdc, hooks.json + scripts, .cursor/agents/*.md, AGENTS.md, PROCESS.md skeleton, docs/dev-log.md | All files created as specified | — |
+| SA1 | Scaffolding & config (continued) | Finish SA1 configs without reinstall; user set package versions/PM manually | All config files accepted; lint script fixed for Next 16; dev deps installed; verify green | — |
 
 ## 3. Timeline
 
@@ -29,6 +31,7 @@
 | Step | Start | End | Notes |
 |---|---|---|---|
 | SA0 | 2026-06-27 ~16:12 local (UTC+10) | 2026-06-27 ~16:30 local (UTC+10) | Cursor tooling: rules, hooks, subagents, process docs |
+| SA1 | 2026-06-27 ~16:31 local (UTC+10) | 2026-06-27 ~18:05 local (UTC+10) | User installed Next/ESLint/TS; dev deps added; `pnpm verify` green |
 
 ## 4. Key Decisions
 
@@ -54,7 +57,7 @@
 
 | Step | Issue | Correction |
 |---|---|---|
-| — | — | — |
+| SA1 | First SA1 attempt interrupted; user manually pinned versions and ran `pnpm install` (Next stack only) | Continued SA1 config-only; dev deps installed in follow-up session; verify green |
 
 ## 7. Self-Assessment (SDD Four Pillars)
 
