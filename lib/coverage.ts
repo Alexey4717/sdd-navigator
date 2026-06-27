@@ -36,8 +36,14 @@ function toArray<T>(value: T | readonly T[] | undefined): readonly T[] {
   return Array.isArray(value) ? (value as readonly T[]) : [value as T];
 }
 
-function compareBy<T extends { id: string; updatedAt: string }>(a: T, b: T, sort: SortKey): number {
-  return sort === 'id' ? a.id.localeCompare(b.id) : a.updatedAt.localeCompare(b.updatedAt);
+function compareBy<T extends { id: string; updatedAt: string }>(
+  a: T,
+  b: T,
+  sort: SortKey,
+): number {
+  return sort === 'id'
+    ? a.id.localeCompare(b.id)
+    : a.updatedAt.localeCompare(b.updatedAt);
 }
 
 // @req SCD-FLT-001
@@ -103,7 +109,9 @@ export function filterAnnotations(
   filter: AnnotationFilter = {},
 ): Annotation[] {
   const types = toArray(filter.type);
-  const byType = annotations.filter((a) => types.length === 0 || types.includes(a.type));
+  const byType = annotations.filter(
+    (a) => types.length === 0 || types.includes(a.type),
+  );
   return filter.orphans === true ? findOrphanAnnotations(byType, reqs) : byType;
 }
 
@@ -114,17 +122,26 @@ export function filterTasks(
   filter: TaskFilter = {},
 ): Task[] {
   const statuses = toArray(filter.status);
-  const byStatus = tasks.filter((t) => statuses.length === 0 || statuses.includes(t.status));
+  const byStatus = tasks.filter(
+    (t) => statuses.length === 0 || statuses.includes(t.status),
+  );
   return filter.orphans === true ? findOrphanTasks(byStatus, reqs) : byStatus;
 }
 
 // @req SCD-TASK-001
-export function sortTasks(tasks: readonly Task[], sort: SortKey, order: SortOrder): Task[] {
+export function sortTasks(
+  tasks: readonly Task[],
+  sort: SortKey,
+  order: SortOrder,
+): Task[] {
   const dir = order === 'asc' ? 1 : -1;
   return [...tasks].sort((a, b) => compareBy(a, b, sort) * dir);
 }
 
-function countBy<T>(items: readonly T[], key: (item: T) => string): Record<string, number> {
+function countBy<T>(
+  items: readonly T[],
+  key: (item: T) => string,
+): Record<string, number> {
   const out: Record<string, number> = {};
   for (const item of items) {
     const k = key(item);

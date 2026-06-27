@@ -31,8 +31,14 @@ async function request<T>(
   } catch (e) {
     return err('network', `Network request failed for ${path}: ${String(e)}`);
   }
-  if (res.status === 404) return err('not_found', `Resource not found: ${path}`, 404);
-  if (!res.ok) return err('http', `HTTP ${res.status} ${res.statusText} for ${path}`, res.status);
+  if (res.status === 404)
+    return err('not_found', `Resource not found: ${path}`, 404);
+  if (!res.ok)
+    return err(
+      'http',
+      `HTTP ${res.status} ${res.statusText} for ${path}`,
+      res.status,
+    );
   try {
     return ok((await res.json()) as T);
   } catch (e) {
@@ -88,22 +94,32 @@ export function createLiveProvider(baseUrl: string): DataProvider {
 
     // @req SCD-FLT-001
     listRequirements: (filters: RequirementListFilters = {}) =>
-      request<Requirement[]>(baseUrl, withQuery('/requirements', requirementQuery(filters))),
+      request<Requirement[]>(
+        baseUrl,
+        withQuery('/requirements', requirementQuery(filters)),
+      ),
 
     // @req SCD-DET-001
     getRequirement: (id: string) =>
-      request<RequirementDetail>(baseUrl, `/requirements/${encodeURIComponent(id)}`),
+      request<RequirementDetail>(
+        baseUrl,
+        `/requirements/${encodeURIComponent(id)}`,
+      ),
 
     // @req SCD-ORPH-001
     listAnnotations: (filters: AnnotationListFilters = {}) =>
-      request<Annotation[]>(baseUrl, withQuery('/annotations', annotationQuery(filters))),
+      request<Annotation[]>(
+        baseUrl,
+        withQuery('/annotations', annotationQuery(filters)),
+      ),
 
     // @req SCD-TASK-001
     listTasks: (filters: TaskListFilters = {}) =>
       request<Task[]>(baseUrl, withQuery('/tasks', taskQuery(filters))),
 
     // @req SCD-API-002
-    triggerScan: () => request<ScanStatus>(baseUrl, '/scan', { method: 'POST' }),
+    triggerScan: () =>
+      request<ScanStatus>(baseUrl, '/scan', { method: 'POST' }),
 
     // @req SCD-SUM-001
     getScanStatus: () => request<ScanStatus>(baseUrl, '/scan'),

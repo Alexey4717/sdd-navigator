@@ -7,15 +7,15 @@ CSS Modules + CSS variables (no CSS framework) · Vitest + RTL · pnpm · Vercel
 
 ## Key Commands
 
-| Command | Purpose |
-|---|---|
-| `pnpm dev` | Start dev server |
-| `pnpm test` | Run Vitest tests |
-| `pnpm typecheck` | TypeScript check (no emit) |
-| `pnpm lint` | ESLint |
-| `pnpm gen:types` | Generate `lib/api/types.ts` from `spec/sdd-coverage-api.yaml` |
-| `pnpm check-coverage` | Verify all SCD requirements are referenced in code |
-| `pnpm verify` | Full gate: typecheck → lint → test → check-coverage → build |
+| Command               | Purpose                                                       |
+| --------------------- | ------------------------------------------------------------- |
+| `pnpm dev`            | Start dev server                                              |
+| `pnpm test`           | Run Vitest tests                                              |
+| `pnpm typecheck`      | TypeScript check (no emit)                                    |
+| `pnpm lint`           | ESLint                                                        |
+| `pnpm gen:types`      | Generate `lib/api/types.ts` from `spec/sdd-coverage-api.yaml` |
+| `pnpm check-coverage` | Verify all SCD requirements are referenced in code            |
+| `pnpm verify`         | Full gate: typecheck → lint → test → check-coverage → build   |
 
 ## Source of Truth
 

@@ -12,8 +12,11 @@ Types come from `lib/api/types.ts` (generated via `pnpm gen:types` from `spec/sd
 Never write domain types by hand; never copy-paste them into components.
 
 ```ts
-// ✅ GOOD
-import type { Requirement, Stats } from '@/lib/api/types';
+// ✅ GOOD — within lib/, use relative paths
+import type { Requirement, Stats } from './api/types';
+
+// ❌ BAD — same layer with @/ alias
+import type { Requirement } from '@/lib/api/types';
 
 // ❌ BAD — hand-rolled duplicate
 type Req = { id: string; status: 'covered' | 'missing' };
@@ -48,8 +51,8 @@ Selection in `lib/api/index.ts` based on `NEXT_PUBLIC_API_URL`.
 ## Filter / sort / assess — lib/coverage.ts only
 
 ```ts
-// ✅ GOOD
-import { filterRequirements, sortBy, assess } from '@/lib/coverage';
+// ✅ GOOD — within lib/, use relative paths
+import { filterRequirements, sortRequirements } from './coverage';
 
 // ❌ BAD — inline duplicate filter
 const filtered = reqs.filter(r => r.status === 'covered');

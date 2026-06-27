@@ -19,7 +19,12 @@ export function ok<T>(data: T): Result<T> {
 }
 
 // @req SCD-API-003
-export function err<T = never>(kind: ApiErrorKind, message: string, status?: number): Result<T> {
-  const error: ApiError = status === undefined ? { kind, message } : { kind, message, status };
+export function err<T = never>(
+  kind: ApiErrorKind,
+  message: string,
+  status?: number,
+): Result<T> {
+  const error: ApiError =
+    status === undefined ? { kind, message } : { kind, message, status };
   return { ok: false, error };
 }

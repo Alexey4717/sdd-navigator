@@ -4,694 +4,694 @@
  */
 
 export interface paths {
-    "/healthcheck": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Service health
-         * @description Returns service status and version. Use to verify the API is running.
-         */
-        get: operations["healthcheck"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  '/healthcheck': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/stats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Project-wide statistics
-         * @description Aggregate numbers for the dashboard: requirement totals broken down by type and coverage status,
-         *     annotation counts by kind (impl/test) with orphan count, task counts by status with orphan count,
-         *     and overall coverage percentage.
-         */
-        get: operations["getStats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Service health
+     * @description Returns service status and version. Use to verify the API is running.
+     */
+    get: operations['healthcheck'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/stats': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/requirements": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List requirements
-         * @description Returns all requirements from `requirements.yaml`. Each requirement has a coverage status
-         *     computed by the scanner: **covered** (has both impl and test annotations), **partial** (impl only),
-         *     or **missing** (no annotations). Filter by type (FR/AR) or status. Sort by id or updatedAt.
-         */
-        get: operations["listRequirements"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Project-wide statistics
+     * @description Aggregate numbers for the dashboard: requirement totals broken down by type and coverage status,
+     *     annotation counts by kind (impl/test) with orphan count, task counts by status with orphan count,
+     *     and overall coverage percentage.
+     */
+    get: operations['getStats'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/requirements': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/requirements/{requirementId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Requirement detail with all linked artifacts
-         * @description Returns a single requirement with its full traceability chain:
-         *     all code annotations (`@req` markers in source and test files) and all tasks from `tasks.yaml`
-         *     that reference this requirement. This is the core navigation view of the SDD Navigator.
-         */
-        get: operations["getRequirement"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * List requirements
+     * @description Returns all requirements from `requirements.yaml`. Each requirement has a coverage status
+     *     computed by the scanner: **covered** (has both impl and test annotations), **partial** (impl only),
+     *     or **missing** (no annotations). Filter by type (FR/AR) or status. Sort by id or updatedAt.
+     */
+    get: operations['listRequirements'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/requirements/{requirementId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/annotations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List code annotations (sorted by file + line)
-         * @description Returns `@req` annotations found in source code by the scanner. Each annotation links a code location
-         *     (file + line) to a requirement ID. Type **impl** = production code, **test** = test code.
-         *     Use `orphans=true` to find annotations referencing requirements that don't exist in `requirements.yaml` —
-         *     typically leftover references after a requirement was removed or renamed.
-         */
-        get: operations["listAnnotations"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Requirement detail with all linked artifacts
+     * @description Returns a single requirement with its full traceability chain:
+     *     all code annotations (`@req` markers in source and test files) and all tasks from `tasks.yaml`
+     *     that reference this requirement. This is the core navigation view of the SDD Navigator.
+     */
+    get: operations['getRequirement'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/annotations': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/tasks": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List tasks
-         * @description Returns work items from `tasks.yaml`. Each task references a requirement by ID.
-         *     Use `orphans=true` to find tasks referencing requirements that don't exist in `requirements.yaml` —
-         *     typically leftover work items for deleted or renamed requirements.
-         */
-        get: operations["listTasks"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * List code annotations (sorted by file + line)
+     * @description Returns `@req` annotations found in source code by the scanner. Each annotation links a code location
+     *     (file + line) to a requirement ID. Type **impl** = production code, **test** = test code.
+     *     Use `orphans=true` to find annotations referencing requirements that don't exist in `requirements.yaml` —
+     *     typically leftover references after a requirement was removed or renamed.
+     */
+    get: operations['listAnnotations'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/tasks': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/scan": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Current scan status
-         * @description Returns the state of the most recent scan. Poll this after `POST /scan` to track progress.
-         */
-        get: operations["getScanStatus"];
-        put?: never;
-        /**
-         * Trigger codebase re-scan
-         * @description Starts a new scan of the project codebase. The scanner reads `requirements.yaml` and `tasks.yaml`,
-         *     then walks source files looking for `@req` annotations. Results update all other endpoints.
-         *     Returns immediately with status `scanning`; poll `GET /scan` for completion.
-         */
-        post: operations["triggerScan"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * List tasks
+     * @description Returns work items from `tasks.yaml`. Each task references a requirement by ID.
+     *     Use `orphans=true` to find tasks referencing requirements that don't exist in `requirements.yaml` —
+     *     typically leftover work items for deleted or renamed requirements.
+     */
+    get: operations['listTasks'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/scan': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    /**
+     * Current scan status
+     * @description Returns the state of the most recent scan. Poll this after `POST /scan` to track progress.
+     */
+    get: operations['getScanStatus'];
+    put?: never;
+    /**
+     * Trigger codebase re-scan
+     * @description Starts a new scan of the project codebase. The scanner reads `requirements.yaml` and `tasks.yaml`,
+     *     then walks source files looking for `@req` annotations. Results update all other endpoints.
+     *     Returns immediately with status `scanning`; poll `GET /scan` for completion.
+     */
+    post: operations['triggerScan'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        Healthcheck: {
-            /** @enum {string} */
-            status: "healthy" | "degraded";
-            version: string;
-            /** Format: date-time */
-            timestamp: string;
-        };
-        Stats: {
-            requirements: components["schemas"]["RequirementStats"];
-            annotations: components["schemas"]["AnnotationStats"];
-            tasks: components["schemas"]["TaskStats"];
-            /**
-             * Format: float
-             * @description Fully covered / total * 100
-             */
-            coverage: number;
-            /** Format: date-time */
-            lastScanAt: string;
-        };
-        /** @description Requirement totals broken down by type and coverage status */
-        RequirementStats: {
-            total: number;
-            /** @description Count per RequirementType (FR, AR) */
-            byType: {
-                [key: string]: number;
-            };
-            /** @description Count per CoverageStatus (covered, partial, missing) */
-            byStatus: {
-                [key: string]: number;
-            };
-        };
-        /** @description Annotation counts by kind with orphan total */
-        AnnotationStats: {
-            total: number;
-            /** @description Annotations in production code */
-            impl: number;
-            /** @description Annotations in test code */
-            test: number;
-            /** @description Annotations referencing non-existent requirements */
-            orphans: number;
-        };
-        /** @description Task counts by status with orphan total */
-        TaskStats: {
-            total: number;
-            /** @description Count per TaskStatus (open, in_progress, done) */
-            byStatus: {
-                [key: string]: number;
-            };
-            /** @description Tasks referencing non-existent requirements */
-            orphans: number;
-        };
-        /**
-         * @description FR = functional, AR = architectural
-         * @enum {string}
-         */
-        RequirementType: "FR" | "AR";
-        /**
-         * @description Coverage status computed by scanner:
-         *     - **covered**: has both impl and test annotations
-         *     - **partial**: has impl annotations but no tests
-         *     - **missing**: no annotations found
-         * @enum {string}
-         */
-        CoverageStatus: "covered" | "partial" | "missing";
-        /** @enum {string} */
-        TaskStatus: "open" | "in_progress" | "done";
-        /** @description A specification item from `requirements.yaml`. ID format: `{TYPE}-{DOMAIN}-{NNN}` (e.g. FR-SCAN-001). */
-        Requirement: {
-            /** @description Unique identifier. Pattern: TYPE-DOMAIN-NNN */
-            id: string;
-            type: components["schemas"]["RequirementType"];
-            /** @description Short human-readable name */
-            title: string;
-            /** @description Specification statement — a MUST/SHOULD directive that can be verified */
-            description: string;
-            status: components["schemas"]["CoverageStatus"];
-            /**
-             * Format: date-time
-             * @description When the requirement was first added to requirements.yaml
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description Last modification timestamp
-             */
-            updatedAt: string;
-        };
-        /** @description Requirement with its full traceability chain — all linked annotations and tasks. */
-        RequirementDetail: components["schemas"]["Requirement"] & {
-            /** @description All `@req` annotations in code that reference this requirement */
-            annotations: components["schemas"]["Annotation"][];
-            /** @description All tasks from tasks.yaml that reference this requirement */
-            tasks: components["schemas"]["Task"][];
-        };
-        /**
-         * @description Annotation kind determined by file location:
-         *     - **impl**: annotation in production source code (e.g. `src/`)
-         *     - **test**: annotation in test files (e.g. `tests/`, `*_test.rs`, `*.test.ts`)
-         * @enum {string}
-         */
-        AnnotationType: "impl" | "test";
-        /** @description A `@req REQUIREMENT_ID` comment found in source code by the scanner. */
-        Annotation: {
-            /** @description Relative path from repository root */
-            file: string;
-            /** @description Line number where `@req` appears */
-            line: number;
-            /** @description Requirement ID referenced by this annotation. May not exist in requirements.yaml (orphan). */
-            reqId: string;
-            type: components["schemas"]["AnnotationType"];
-            /** @description 2-3 lines of code context around the `@req` comment */
-            snippet: string;
-        };
-        /** @description A work item from `tasks.yaml` linked to a requirement. */
-        Task: {
-            /** @description Task identifier (e.g. TASK-001) */
-            id: string;
-            /** @description Requirement ID this task relates to. May not exist in requirements.yaml (orphan). */
-            requirementId: string;
-            /** @description What needs to be done */
-            title: string;
-            status: components["schemas"]["TaskStatus"];
-            /** @description Person responsible. Omitted if unassigned. */
-            assignee?: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        ScanStatus: {
-            /** @enum {string} */
-            status: "idle" | "scanning" | "completed" | "failed";
-            /** Format: date-time */
-            startedAt: string;
-            /** Format: date-time */
-            completedAt?: string;
-            /** @description Scan duration in milliseconds */
-            duration?: number;
-        };
-        Error: {
-            error: string;
-            message: string;
-        };
+  schemas: {
+    Healthcheck: {
+      /** @enum {string} */
+      status: 'healthy' | 'degraded';
+      version: string;
+      /** Format: date-time */
+      timestamp: string;
     };
-    responses: {
-        /** @description Resource not found */
-        NotFound: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                /**
-                 * @example {
-                 *       "error": "not_found",
-                 *       "message": "Requirement 'FR-UNKNOWN-999' not found"
-                 *     }
-                 */
-                "application/json": components["schemas"]["Error"];
-            };
-        };
+    Stats: {
+      requirements: components['schemas']['RequirementStats'];
+      annotations: components['schemas']['AnnotationStats'];
+      tasks: components['schemas']['TaskStats'];
+      /**
+       * Format: float
+       * @description Fully covered / total * 100
+       */
+      coverage: number;
+      /** Format: date-time */
+      lastScanAt: string;
     };
-    parameters: {
-        /** @example FR-SCAN-001 */
-        requirementId: string;
+    /** @description Requirement totals broken down by type and coverage status */
+    RequirementStats: {
+      total: number;
+      /** @description Count per RequirementType (FR, AR) */
+      byType: {
+        [key: string]: number;
+      };
+      /** @description Count per CoverageStatus (covered, partial, missing) */
+      byStatus: {
+        [key: string]: number;
+      };
     };
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    /** @description Annotation counts by kind with orphan total */
+    AnnotationStats: {
+      total: number;
+      /** @description Annotations in production code */
+      impl: number;
+      /** @description Annotations in test code */
+      test: number;
+      /** @description Annotations referencing non-existent requirements */
+      orphans: number;
+    };
+    /** @description Task counts by status with orphan total */
+    TaskStats: {
+      total: number;
+      /** @description Count per TaskStatus (open, in_progress, done) */
+      byStatus: {
+        [key: string]: number;
+      };
+      /** @description Tasks referencing non-existent requirements */
+      orphans: number;
+    };
+    /**
+     * @description FR = functional, AR = architectural
+     * @enum {string}
+     */
+    RequirementType: 'FR' | 'AR';
+    /**
+     * @description Coverage status computed by scanner:
+     *     - **covered**: has both impl and test annotations
+     *     - **partial**: has impl annotations but no tests
+     *     - **missing**: no annotations found
+     * @enum {string}
+     */
+    CoverageStatus: 'covered' | 'partial' | 'missing';
+    /** @enum {string} */
+    TaskStatus: 'open' | 'in_progress' | 'done';
+    /** @description A specification item from `requirements.yaml`. ID format: `{TYPE}-{DOMAIN}-{NNN}` (e.g. FR-SCAN-001). */
+    Requirement: {
+      /** @description Unique identifier. Pattern: TYPE-DOMAIN-NNN */
+      id: string;
+      type: components['schemas']['RequirementType'];
+      /** @description Short human-readable name */
+      title: string;
+      /** @description Specification statement — a MUST/SHOULD directive that can be verified */
+      description: string;
+      status: components['schemas']['CoverageStatus'];
+      /**
+       * Format: date-time
+       * @description When the requirement was first added to requirements.yaml
+       */
+      createdAt: string;
+      /**
+       * Format: date-time
+       * @description Last modification timestamp
+       */
+      updatedAt: string;
+    };
+    /** @description Requirement with its full traceability chain — all linked annotations and tasks. */
+    RequirementDetail: components['schemas']['Requirement'] & {
+      /** @description All `@req` annotations in code that reference this requirement */
+      annotations: components['schemas']['Annotation'][];
+      /** @description All tasks from tasks.yaml that reference this requirement */
+      tasks: components['schemas']['Task'][];
+    };
+    /**
+     * @description Annotation kind determined by file location:
+     *     - **impl**: annotation in production source code (e.g. `src/`)
+     *     - **test**: annotation in test files (e.g. `tests/`, `*_test.rs`, `*.test.ts`)
+     * @enum {string}
+     */
+    AnnotationType: 'impl' | 'test';
+    /** @description A `@req REQUIREMENT_ID` comment found in source code by the scanner. */
+    Annotation: {
+      /** @description Relative path from repository root */
+      file: string;
+      /** @description Line number where `@req` appears */
+      line: number;
+      /** @description Requirement ID referenced by this annotation. May not exist in requirements.yaml (orphan). */
+      reqId: string;
+      type: components['schemas']['AnnotationType'];
+      /** @description 2-3 lines of code context around the `@req` comment */
+      snippet: string;
+    };
+    /** @description A work item from `tasks.yaml` linked to a requirement. */
+    Task: {
+      /** @description Task identifier (e.g. TASK-001) */
+      id: string;
+      /** @description Requirement ID this task relates to. May not exist in requirements.yaml (orphan). */
+      requirementId: string;
+      /** @description What needs to be done */
+      title: string;
+      status: components['schemas']['TaskStatus'];
+      /** @description Person responsible. Omitted if unassigned. */
+      assignee?: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    ScanStatus: {
+      /** @enum {string} */
+      status: 'idle' | 'scanning' | 'completed' | 'failed';
+      /** Format: date-time */
+      startedAt: string;
+      /** Format: date-time */
+      completedAt?: string;
+      /** @description Scan duration in milliseconds */
+      duration?: number;
+    };
+    Error: {
+      error: string;
+      message: string;
+    };
+  };
+  responses: {
+    /** @description Resource not found */
+    NotFound: {
+      headers: {
+        [name: string]: unknown;
+      };
+      content: {
+        /**
+         * @example {
+         *       "error": "not_found",
+         *       "message": "Requirement 'FR-UNKNOWN-999' not found"
+         *     }
+         */
+        'application/json': components['schemas']['Error'];
+      };
+    };
+  };
+  parameters: {
+    /** @example FR-SCAN-001 */
+    requirementId: string;
+  };
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    healthcheck: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example {
-                     *       "status": "healthy",
-                     *       "version": "3.0.0",
-                     *       "timestamp": "2026-03-01T10:15:00Z"
-                     *     }
-                     */
-                    "application/json": components["schemas"]["Healthcheck"];
-                };
-            };
-        };
+  healthcheck: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    getStats: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Aggregate stats across all artifact types */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example {
-                     *       "requirements": {
-                     *         "total": 8,
-                     *         "byType": {
-                     *           "FR": 6,
-                     *           "AR": 2
-                     *         },
-                     *         "byStatus": {
-                     *           "covered": 5,
-                     *           "partial": 1,
-                     *           "missing": 2
-                     *         }
-                     *       },
-                     *       "annotations": {
-                     *         "total": 16,
-                     *         "impl": 10,
-                     *         "test": 6,
-                     *         "orphans": 2
-                     *       },
-                     *       "tasks": {
-                     *         "total": 6,
-                     *         "byStatus": {
-                     *           "open": 3,
-                     *           "in_progress": 1,
-                     *           "done": 2
-                     *         },
-                     *         "orphans": 1
-                     *       },
-                     *       "coverage": 62.5,
-                     *       "lastScanAt": "2026-03-01T10:15:00Z"
-                     *     }
-                     */
-                    "application/json": components["schemas"]["Stats"];
-                };
-            };
+        content: {
+          /**
+           * @example {
+           *       "status": "healthy",
+           *       "version": "3.0.0",
+           *       "timestamp": "2026-03-01T10:15:00Z"
+           *     }
+           */
+          'application/json': components['schemas']['Healthcheck'];
         };
+      };
     };
-    listRequirements: {
-        parameters: {
-            query?: {
-                /** @description Filter by requirement type */
-                type?: components["schemas"]["RequirementType"];
-                /** @description Filter by coverage status */
-                status?: components["schemas"]["CoverageStatus"];
-                sort?: "id" | "updatedAt";
-                order?: "asc" | "desc";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Requirements list */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example [
-                     *       {
-                     *         "id": "FR-SCAN-001",
-                     *         "type": "FR",
-                     *         "title": "Parse requirements.yaml",
-                     *         "description": "System MUST read requirements.yaml from repository root and validate that every entry contains id and title fields.",
-                     *         "status": "covered",
-                     *         "createdAt": "2026-02-10T09:00:00Z",
-                     *         "updatedAt": "2026-02-28T14:30:00Z"
-                     *       },
-                     *       {
-                     *         "id": "FR-SCAN-002",
-                     *         "type": "FR",
-                     *         "title": "Scan @req annotations in source files",
-                     *         "description": "Scanner MUST find all @req annotations in .rs, .ts, .js, .py, .dart, .go files and classify each as impl or test based on file path.",
-                     *         "status": "covered",
-                     *         "createdAt": "2026-02-10T09:00:00Z",
-                     *         "updatedAt": "2026-03-01T10:15:00Z"
-                     *       },
-                     *       {
-                     *         "id": "FR-SCAN-003",
-                     *         "type": "FR",
-                     *         "title": "Detect orphan annotations",
-                     *         "description": "Scanner MUST report annotations whose reqId does not match any entry in requirements.yaml.",
-                     *         "status": "covered",
-                     *         "createdAt": "2026-02-12T11:00:00Z",
-                     *         "updatedAt": "2026-02-28T14:30:00Z"
-                     *       },
-                     *       {
-                     *         "id": "FR-API-001",
-                     *         "type": "FR",
-                     *         "title": "List requirements with filters and sorting",
-                     *         "description": "GET /requirements MUST support filtering by type and status, sorting by id or updatedAt.",
-                     *         "status": "covered",
-                     *         "createdAt": "2026-02-14T10:00:00Z",
-                     *         "updatedAt": "2026-03-01T10:15:00Z"
-                     *       },
-                     *       {
-                     *         "id": "FR-API-002",
-                     *         "type": "FR",
-                     *         "title": "Requirement detail with linked artifacts",
-                     *         "description": "GET /requirements/{id} MUST return the requirement with all linked annotations and tasks.",
-                     *         "status": "partial",
-                     *         "createdAt": "2026-02-14T10:00:00Z",
-                     *         "updatedAt": "2026-02-25T16:00:00Z"
-                     *       },
-                     *       {
-                     *         "id": "FR-API-003",
-                     *         "type": "FR",
-                     *         "title": "Full-text search across requirements",
-                     *         "description": "Service SHOULD support substring matching across requirement id and title fields.",
-                     *         "status": "partial",
-                     *         "createdAt": "2026-02-18T13:00:00Z",
-                     *         "updatedAt": "2026-02-20T09:45:00Z"
-                     *       },
-                     *       {
-                     *         "id": "AR-PERF-001",
-                     *         "type": "AR",
-                     *         "title": "Scan completes under 5s for 10k files",
-                     *         "description": "Full codebase scan MUST complete within 5 seconds for repositories containing up to 10,000 source files.",
-                     *         "status": "missing",
-                     *         "createdAt": "2026-02-10T09:00:00Z",
-                     *         "updatedAt": "2026-02-10T09:00:00Z"
-                     *       },
-                     *       {
-                     *         "id": "AR-SEC-001",
-                     *         "type": "AR",
-                     *         "title": "Rate-limit /scan endpoint (10 req/min)",
-                     *         "description": "POST /scan MUST reject requests exceeding 10 per minute per client IP with HTTP 429.",
-                     *         "status": "missing",
-                     *         "createdAt": "2026-02-20T15:00:00Z",
-                     *         "updatedAt": "2026-02-20T15:00:00Z"
-                     *       }
-                     *     ]
-                     */
-                    "application/json": components["schemas"]["Requirement"][];
-                };
-            };
-        };
+  };
+  getStats: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    getRequirement: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @example FR-SCAN-001 */
-                requirementId: components["parameters"]["requirementId"];
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Aggregate stats across all artifact types */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Requirement with annotations and tasks */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example {
-                     *       "id": "FR-SCAN-001",
-                     *       "type": "FR",
-                     *       "title": "Parse requirements.yaml",
-                     *       "description": "System MUST read requirements.yaml from repository root and validate that every entry contains id and title fields.",
-                     *       "status": "covered",
-                     *       "createdAt": "2026-02-10T09:00:00Z",
-                     *       "updatedAt": "2026-02-28T14:30:00Z",
-                     *       "annotations": [
-                     *         {
-                     *           "file": "src/parser.rs",
-                     *           "line": 15,
-                     *           "reqId": "FR-SCAN-001",
-                     *           "type": "impl",
-                     *           "snippet": "/// @req FR-SCAN-001\nfn parse_requirements(path: &Path) -> Result<Vec<Requirement>> {"
-                     *         },
-                     *         {
-                     *           "file": "src/parser.rs",
-                     *           "line": 58,
-                     *           "reqId": "FR-SCAN-001",
-                     *           "type": "impl",
-                     *           "snippet": "/// @req FR-SCAN-001\nfn validate_yaml_schema(doc: &Value) -> Result<()> {"
-                     *         },
-                     *         {
-                     *           "file": "tests/parser_test.rs",
-                     *           "line": 12,
-                     *           "reqId": "FR-SCAN-001",
-                     *           "type": "test",
-                     *           "snippet": "/// @req FR-SCAN-001\n#[test] fn test_parse_valid_yaml() {"
-                     *         }
-                     *       ],
-                     *       "tasks": [
-                     *         {
-                     *           "id": "TASK-001",
-                     *           "requirementId": "FR-SCAN-001",
-                     *           "title": "Implement YAML parser",
-                     *           "status": "done",
-                     *           "assignee": "alexey",
-                     *           "createdAt": "2026-02-10T09:00:00Z",
-                     *           "updatedAt": "2026-02-20T18:00:00Z"
-                     *         }
-                     *       ]
-                     *     }
-                     */
-                    "application/json": components["schemas"]["RequirementDetail"];
-                };
-            };
-            404: components["responses"]["NotFound"];
+        content: {
+          /**
+           * @example {
+           *       "requirements": {
+           *         "total": 8,
+           *         "byType": {
+           *           "FR": 6,
+           *           "AR": 2
+           *         },
+           *         "byStatus": {
+           *           "covered": 5,
+           *           "partial": 1,
+           *           "missing": 2
+           *         }
+           *       },
+           *       "annotations": {
+           *         "total": 16,
+           *         "impl": 10,
+           *         "test": 6,
+           *         "orphans": 2
+           *       },
+           *       "tasks": {
+           *         "total": 6,
+           *         "byStatus": {
+           *           "open": 3,
+           *           "in_progress": 1,
+           *           "done": 2
+           *         },
+           *         "orphans": 1
+           *       },
+           *       "coverage": 62.5,
+           *       "lastScanAt": "2026-03-01T10:15:00Z"
+           *     }
+           */
+          'application/json': components['schemas']['Stats'];
         };
+      };
     };
-    listAnnotations: {
-        parameters: {
-            query?: {
-                /** @description Filter by annotation kind */
-                type?: components["schemas"]["AnnotationType"];
-                /** @description If true, return only orphan annotations (reqId not in requirements.yaml) */
-                orphans?: boolean;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Annotations list */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Annotation"][];
-                };
-            };
-        };
+  };
+  listRequirements: {
+    parameters: {
+      query?: {
+        /** @description Filter by requirement type */
+        type?: components['schemas']['RequirementType'];
+        /** @description Filter by coverage status */
+        status?: components['schemas']['CoverageStatus'];
+        sort?: 'id' | 'updatedAt';
+        order?: 'asc' | 'desc';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    listTasks: {
-        parameters: {
-            query?: {
-                /** @description Filter by task status */
-                status?: components["schemas"]["TaskStatus"];
-                /** @description If true, return only orphan tasks (requirementId not in requirements.yaml) */
-                orphans?: boolean;
-                sort?: "id" | "updatedAt";
-                order?: "asc" | "desc";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Requirements list */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Tasks list */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Task"][];
-                };
-            };
+        content: {
+          /**
+           * @example [
+           *       {
+           *         "id": "FR-SCAN-001",
+           *         "type": "FR",
+           *         "title": "Parse requirements.yaml",
+           *         "description": "System MUST read requirements.yaml from repository root and validate that every entry contains id and title fields.",
+           *         "status": "covered",
+           *         "createdAt": "2026-02-10T09:00:00Z",
+           *         "updatedAt": "2026-02-28T14:30:00Z"
+           *       },
+           *       {
+           *         "id": "FR-SCAN-002",
+           *         "type": "FR",
+           *         "title": "Scan @req annotations in source files",
+           *         "description": "Scanner MUST find all @req annotations in .rs, .ts, .js, .py, .dart, .go files and classify each as impl or test based on file path.",
+           *         "status": "covered",
+           *         "createdAt": "2026-02-10T09:00:00Z",
+           *         "updatedAt": "2026-03-01T10:15:00Z"
+           *       },
+           *       {
+           *         "id": "FR-SCAN-003",
+           *         "type": "FR",
+           *         "title": "Detect orphan annotations",
+           *         "description": "Scanner MUST report annotations whose reqId does not match any entry in requirements.yaml.",
+           *         "status": "covered",
+           *         "createdAt": "2026-02-12T11:00:00Z",
+           *         "updatedAt": "2026-02-28T14:30:00Z"
+           *       },
+           *       {
+           *         "id": "FR-API-001",
+           *         "type": "FR",
+           *         "title": "List requirements with filters and sorting",
+           *         "description": "GET /requirements MUST support filtering by type and status, sorting by id or updatedAt.",
+           *         "status": "covered",
+           *         "createdAt": "2026-02-14T10:00:00Z",
+           *         "updatedAt": "2026-03-01T10:15:00Z"
+           *       },
+           *       {
+           *         "id": "FR-API-002",
+           *         "type": "FR",
+           *         "title": "Requirement detail with linked artifacts",
+           *         "description": "GET /requirements/{id} MUST return the requirement with all linked annotations and tasks.",
+           *         "status": "partial",
+           *         "createdAt": "2026-02-14T10:00:00Z",
+           *         "updatedAt": "2026-02-25T16:00:00Z"
+           *       },
+           *       {
+           *         "id": "FR-API-003",
+           *         "type": "FR",
+           *         "title": "Full-text search across requirements",
+           *         "description": "Service SHOULD support substring matching across requirement id and title fields.",
+           *         "status": "partial",
+           *         "createdAt": "2026-02-18T13:00:00Z",
+           *         "updatedAt": "2026-02-20T09:45:00Z"
+           *       },
+           *       {
+           *         "id": "AR-PERF-001",
+           *         "type": "AR",
+           *         "title": "Scan completes under 5s for 10k files",
+           *         "description": "Full codebase scan MUST complete within 5 seconds for repositories containing up to 10,000 source files.",
+           *         "status": "missing",
+           *         "createdAt": "2026-02-10T09:00:00Z",
+           *         "updatedAt": "2026-02-10T09:00:00Z"
+           *       },
+           *       {
+           *         "id": "AR-SEC-001",
+           *         "type": "AR",
+           *         "title": "Rate-limit /scan endpoint (10 req/min)",
+           *         "description": "POST /scan MUST reject requests exceeding 10 per minute per client IP with HTTP 429.",
+           *         "status": "missing",
+           *         "createdAt": "2026-02-20T15:00:00Z",
+           *         "updatedAt": "2026-02-20T15:00:00Z"
+           *       }
+           *     ]
+           */
+          'application/json': components['schemas']['Requirement'][];
         };
+      };
     };
-    getScanStatus: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Scan state */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example {
-                     *       "status": "completed",
-                     *       "startedAt": "2026-03-01T10:14:59Z",
-                     *       "completedAt": "2026-03-01T10:15:00Z",
-                     *       "duration": 340
-                     *     }
-                     */
-                    "application/json": components["schemas"]["ScanStatus"];
-                };
-            };
-        };
+  };
+  getRequirement: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @example FR-SCAN-001 */
+        requirementId: components['parameters']['requirementId'];
+      };
+      cookie?: never;
     };
-    triggerScan: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Requirement with annotations and tasks */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Scan started */
-            202: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    /**
-                     * @example {
-                     *       "status": "scanning",
-                     *       "startedAt": "2026-03-01T10:14:59Z"
-                     *     }
-                     */
-                    "application/json": components["schemas"]["ScanStatus"];
-                };
-            };
+        content: {
+          /**
+           * @example {
+           *       "id": "FR-SCAN-001",
+           *       "type": "FR",
+           *       "title": "Parse requirements.yaml",
+           *       "description": "System MUST read requirements.yaml from repository root and validate that every entry contains id and title fields.",
+           *       "status": "covered",
+           *       "createdAt": "2026-02-10T09:00:00Z",
+           *       "updatedAt": "2026-02-28T14:30:00Z",
+           *       "annotations": [
+           *         {
+           *           "file": "src/parser.rs",
+           *           "line": 15,
+           *           "reqId": "FR-SCAN-001",
+           *           "type": "impl",
+           *           "snippet": "/// @req FR-SCAN-001\nfn parse_requirements(path: &Path) -> Result<Vec<Requirement>> {"
+           *         },
+           *         {
+           *           "file": "src/parser.rs",
+           *           "line": 58,
+           *           "reqId": "FR-SCAN-001",
+           *           "type": "impl",
+           *           "snippet": "/// @req FR-SCAN-001\nfn validate_yaml_schema(doc: &Value) -> Result<()> {"
+           *         },
+           *         {
+           *           "file": "tests/parser_test.rs",
+           *           "line": 12,
+           *           "reqId": "FR-SCAN-001",
+           *           "type": "test",
+           *           "snippet": "/// @req FR-SCAN-001\n#[test] fn test_parse_valid_yaml() {"
+           *         }
+           *       ],
+           *       "tasks": [
+           *         {
+           *           "id": "TASK-001",
+           *           "requirementId": "FR-SCAN-001",
+           *           "title": "Implement YAML parser",
+           *           "status": "done",
+           *           "assignee": "alexey",
+           *           "createdAt": "2026-02-10T09:00:00Z",
+           *           "updatedAt": "2026-02-20T18:00:00Z"
+           *         }
+           *       ]
+           *     }
+           */
+          'application/json': components['schemas']['RequirementDetail'];
         };
+      };
+      404: components['responses']['NotFound'];
     };
+  };
+  listAnnotations: {
+    parameters: {
+      query?: {
+        /** @description Filter by annotation kind */
+        type?: components['schemas']['AnnotationType'];
+        /** @description If true, return only orphan annotations (reqId not in requirements.yaml) */
+        orphans?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Annotations list */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Annotation'][];
+        };
+      };
+    };
+  };
+  listTasks: {
+    parameters: {
+      query?: {
+        /** @description Filter by task status */
+        status?: components['schemas']['TaskStatus'];
+        /** @description If true, return only orphan tasks (requirementId not in requirements.yaml) */
+        orphans?: boolean;
+        sort?: 'id' | 'updatedAt';
+        order?: 'asc' | 'desc';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Tasks list */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Task'][];
+        };
+      };
+    };
+  };
+  getScanStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Scan state */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "status": "completed",
+           *       "startedAt": "2026-03-01T10:14:59Z",
+           *       "completedAt": "2026-03-01T10:15:00Z",
+           *       "duration": 340
+           *     }
+           */
+          'application/json': components['schemas']['ScanStatus'];
+        };
+      };
+    };
+  };
+  triggerScan: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Scan started */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "status": "scanning",
+           *       "startedAt": "2026-03-01T10:14:59Z"
+           *     }
+           */
+          'application/json': components['schemas']['ScanStatus'];
+        };
+      };
+    };
+  };
 }

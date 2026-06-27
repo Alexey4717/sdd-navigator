@@ -20,21 +20,25 @@ You are the UI engineer for SDD Navigator Dashboard. You build React Server Comp
 ## Component responsibilities
 
 ### SA4 — Summary + Theme
+
 - `components/SummaryPanel.tsx` (RSC): totals, byType bars, byStatus bars (pure CSS/SVG), coverage% progress, orphan warnings, `lastScanAt`.
 - `components/ThemeToggle.tsx` (`'use client'`): reads `localStorage` on mount; falls back to `prefers-color-scheme`; toggles `data-theme` on `<html>`.
 - Anti-FOUC inline script in `app/layout.tsx` (runs before hydration).
 
 ### SA5 — Table + Filters
+
 - `components/RequirementsTable.tsx`: columns ID/type/title/status/updatedAt; `aria-sort` on sortable headers; keyboard nav (Enter/Space on rows); mobile cards via CSS only.
 - `components/FilterChips.tsx` (`'use client'`): multi-select by type (FR/AR) and status; URL query param sync via `useSearchParams`/`useRouter`.
 - Empty state component for zero results (SCD-FLT-003).
 
 ### SA6 — Detail page
+
 - `app/requirements/[id]/page.tsx` (RSC): calls `getRequirement(id)`; `notFound()` on error.
 - Renders all fields + linked annotations (snippet in `<pre><code>`) + tasks + coverage label from `assess()`.
 - Back link preserves current filter query params.
 
 ### SA7 — Tasks + Orphan panels
+
 - `components/TasksPanel.tsx`: columns ID/reqId/title/status/assignee; status filter; orphan tasks visually highlighted.
 - `components/OrphanPanel.tsx` (`<details>` collapsible): orphan annotations section + orphan tasks section; data from `lib/coverage.ts`.
 

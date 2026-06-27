@@ -28,6 +28,7 @@ You are the spec and data author for SDD Navigator Dashboard. Your job is to pro
 ## DRY consistency check (mandatory)
 
 After writing all files, verify:
+
 - `stats.byType.FR + stats.byType.AR === requirements.json.length` (8)
 - `stats.byStatus.covered + stats.byStatus.partial + stats.byStatus.missing === 8`
 - `stats.annotations.total === annotations.json.length` (16)

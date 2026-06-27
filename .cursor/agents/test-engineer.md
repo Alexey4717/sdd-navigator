@@ -21,6 +21,7 @@ You are the test engineer for SDD Navigator Dashboard. You write behavioral test
 ### Data layer tests (`lib/*.test.ts`)
 
 For each module, cover:
+
 - Valid input → correct output.
 - Malformed JSON / unexpected shape → `Result` with `malformed` error, no throw.
 - Empty list → empty array result, no crash.

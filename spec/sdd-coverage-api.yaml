@@ -30,16 +30,16 @@ paths:
       description: Returns service status and version. Use to verify the API is running.
       operationId: healthcheck
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Healthcheck"
+                $ref: '#/components/schemas/Healthcheck'
               example:
                 status: healthy
-                version: "3.0.0"
-                timestamp: "2026-03-01T10:15:00Z"
+                version: '3.0.0'
+                timestamp: '2026-03-01T10:15:00Z'
 
   /stats:
     get:
@@ -50,12 +50,12 @@ paths:
         and overall coverage percentage.
       operationId: getStats
       responses:
-        "200":
+        '200':
           description: Aggregate stats across all artifact types
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Stats"
+                $ref: '#/components/schemas/Stats'
               example:
                 requirements:
                   total: 8
@@ -71,7 +71,7 @@ paths:
                   byStatus: { open: 3, in_progress: 1, done: 2 }
                   orphans: 1
                 coverage: 62.5
-                lastScanAt: "2026-03-01T10:15:00Z"
+                lastScanAt: '2026-03-01T10:15:00Z'
 
   /requirements:
     get:
@@ -84,14 +84,14 @@ paths:
       parameters:
         - name: type
           in: query
-          description: "Filter by requirement type"
+          description: 'Filter by requirement type'
           schema:
-            $ref: "#/components/schemas/RequirementType"
+            $ref: '#/components/schemas/RequirementType'
         - name: status
           in: query
-          description: "Filter by coverage status"
+          description: 'Filter by coverage status'
           schema:
-            $ref: "#/components/schemas/CoverageStatus"
+            $ref: '#/components/schemas/CoverageStatus'
         - name: sort
           in: query
           schema:
@@ -105,71 +105,71 @@ paths:
             enum: [asc, desc]
             default: asc
       responses:
-        "200":
+        '200':
           description: Requirements list
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Requirement"
+                  $ref: '#/components/schemas/Requirement'
               example:
                 - id: FR-SCAN-001
                   type: FR
                   title: Parse requirements.yaml
-                  description: "System MUST read requirements.yaml from repository root and validate that every entry contains id and title fields."
+                  description: 'System MUST read requirements.yaml from repository root and validate that every entry contains id and title fields.'
                   status: covered
-                  createdAt: "2026-02-10T09:00:00Z"
-                  updatedAt: "2026-02-28T14:30:00Z"
+                  createdAt: '2026-02-10T09:00:00Z'
+                  updatedAt: '2026-02-28T14:30:00Z'
                 - id: FR-SCAN-002
                   type: FR
                   title: Scan @req annotations in source files
-                  description: "Scanner MUST find all @req annotations in .rs, .ts, .js, .py, .dart, .go files and classify each as impl or test based on file path."
+                  description: 'Scanner MUST find all @req annotations in .rs, .ts, .js, .py, .dart, .go files and classify each as impl or test based on file path.'
                   status: covered
-                  createdAt: "2026-02-10T09:00:00Z"
-                  updatedAt: "2026-03-01T10:15:00Z"
+                  createdAt: '2026-02-10T09:00:00Z'
+                  updatedAt: '2026-03-01T10:15:00Z'
                 - id: FR-SCAN-003
                   type: FR
                   title: Detect orphan annotations
-                  description: "Scanner MUST report annotations whose reqId does not match any entry in requirements.yaml."
+                  description: 'Scanner MUST report annotations whose reqId does not match any entry in requirements.yaml.'
                   status: covered
-                  createdAt: "2026-02-12T11:00:00Z"
-                  updatedAt: "2026-02-28T14:30:00Z"
+                  createdAt: '2026-02-12T11:00:00Z'
+                  updatedAt: '2026-02-28T14:30:00Z'
                 - id: FR-API-001
                   type: FR
                   title: List requirements with filters and sorting
-                  description: "GET /requirements MUST support filtering by type and status, sorting by id or updatedAt."
+                  description: 'GET /requirements MUST support filtering by type and status, sorting by id or updatedAt.'
                   status: covered
-                  createdAt: "2026-02-14T10:00:00Z"
-                  updatedAt: "2026-03-01T10:15:00Z"
+                  createdAt: '2026-02-14T10:00:00Z'
+                  updatedAt: '2026-03-01T10:15:00Z'
                 - id: FR-API-002
                   type: FR
                   title: Requirement detail with linked artifacts
-                  description: "GET /requirements/{id} MUST return the requirement with all linked annotations and tasks."
+                  description: 'GET /requirements/{id} MUST return the requirement with all linked annotations and tasks.'
                   status: partial
-                  createdAt: "2026-02-14T10:00:00Z"
-                  updatedAt: "2026-02-25T16:00:00Z"
+                  createdAt: '2026-02-14T10:00:00Z'
+                  updatedAt: '2026-02-25T16:00:00Z'
                 - id: FR-API-003
                   type: FR
                   title: Full-text search across requirements
-                  description: "Service SHOULD support substring matching across requirement id and title fields."
+                  description: 'Service SHOULD support substring matching across requirement id and title fields.'
                   status: partial
-                  createdAt: "2026-02-18T13:00:00Z"
-                  updatedAt: "2026-02-20T09:45:00Z"
+                  createdAt: '2026-02-18T13:00:00Z'
+                  updatedAt: '2026-02-20T09:45:00Z'
                 - id: AR-PERF-001
                   type: AR
                   title: Scan completes under 5s for 10k files
-                  description: "Full codebase scan MUST complete within 5 seconds for repositories containing up to 10,000 source files."
+                  description: 'Full codebase scan MUST complete within 5 seconds for repositories containing up to 10,000 source files.'
                   status: missing
-                  createdAt: "2026-02-10T09:00:00Z"
-                  updatedAt: "2026-02-10T09:00:00Z"
+                  createdAt: '2026-02-10T09:00:00Z'
+                  updatedAt: '2026-02-10T09:00:00Z'
                 - id: AR-SEC-001
                   type: AR
-                  title: "Rate-limit /scan endpoint (10 req/min)"
-                  description: "POST /scan MUST reject requests exceeding 10 per minute per client IP with HTTP 429."
+                  title: 'Rate-limit /scan endpoint (10 req/min)'
+                  description: 'POST /scan MUST reject requests exceeding 10 per minute per client IP with HTTP 429.'
                   status: missing
-                  createdAt: "2026-02-20T15:00:00Z"
-                  updatedAt: "2026-02-20T15:00:00Z"
+                  createdAt: '2026-02-20T15:00:00Z'
+                  updatedAt: '2026-02-20T15:00:00Z'
 
   /requirements/{requirementId}:
     get:
@@ -180,22 +180,22 @@ paths:
         that reference this requirement. This is the core navigation view of the SDD Navigator.
       operationId: getRequirement
       parameters:
-        - $ref: "#/components/parameters/requirementId"
+        - $ref: '#/components/parameters/requirementId'
       responses:
-        "200":
+        '200':
           description: Requirement with annotations and tasks
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RequirementDetail"
+                $ref: '#/components/schemas/RequirementDetail'
               example:
                 id: FR-SCAN-001
                 type: FR
                 title: Parse requirements.yaml
-                description: "System MUST read requirements.yaml from repository root and validate that every entry contains id and title fields."
+                description: 'System MUST read requirements.yaml from repository root and validate that every entry contains id and title fields.'
                 status: covered
-                createdAt: "2026-02-10T09:00:00Z"
-                updatedAt: "2026-02-28T14:30:00Z"
+                createdAt: '2026-02-10T09:00:00Z'
+                updatedAt: '2026-02-28T14:30:00Z'
                 annotations:
                   - file: src/parser.rs
                     line: 15
@@ -218,14 +218,14 @@ paths:
                     title: Implement YAML parser
                     status: done
                     assignee: alexey
-                    createdAt: "2026-02-10T09:00:00Z"
-                    updatedAt: "2026-02-20T18:00:00Z"
-        "404":
-          $ref: "#/components/responses/NotFound"
+                    createdAt: '2026-02-10T09:00:00Z'
+                    updatedAt: '2026-02-20T18:00:00Z'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /annotations:
     get:
-      summary: "List code annotations (sorted by file + line)"
+      summary: 'List code annotations (sorted by file + line)'
       description: |
         Returns `@req` annotations found in source code by the scanner. Each annotation links a code location
         (file + line) to a requirement ID. Type **impl** = production code, **test** = test code.
@@ -235,27 +235,27 @@ paths:
       parameters:
         - name: type
           in: query
-          description: "Filter by annotation kind"
+          description: 'Filter by annotation kind'
           schema:
-            $ref: "#/components/schemas/AnnotationType"
+            $ref: '#/components/schemas/AnnotationType'
         - name: orphans
           in: query
-          description: "If true, return only orphan annotations (reqId not in requirements.yaml)"
+          description: 'If true, return only orphan annotations (reqId not in requirements.yaml)'
           schema:
             type: boolean
             default: false
       responses:
-        "200":
+        '200':
           description: Annotations list
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Annotation"
+                  $ref: '#/components/schemas/Annotation'
               examples:
                 all:
-                  summary: "GET /annotations (first 3 of 16)"
+                  summary: 'GET /annotations (first 3 of 16)'
                   value:
                     - file: src/api/legacy.rs
                       line: 5
@@ -273,7 +273,7 @@ paths:
                       type: impl
                       snippet: "/// @req FR-API-002\nasync fn get_requirement(path: Path<String>) -> Json<RequirementDetail> {"
                 orphans_only:
-                  summary: "GET /annotations?orphans=true"
+                  summary: 'GET /annotations?orphans=true'
                   value:
                     - file: src/api/legacy.rs
                       line: 5
@@ -286,7 +286,7 @@ paths:
                       type: test
                       snippet: "/// @req FR-API-099\n#[tokio::test] async fn test_removed_endpoint() {"
                 tests_only:
-                  summary: "GET /annotations?type=test"
+                  summary: 'GET /annotations?type=test'
                   value:
                     - file: tests/api_test.rs
                       line: 20
@@ -320,12 +320,12 @@ paths:
       parameters:
         - name: status
           in: query
-          description: "Filter by task status"
+          description: 'Filter by task status'
           schema:
-            $ref: "#/components/schemas/TaskStatus"
+            $ref: '#/components/schemas/TaskStatus'
         - name: orphans
           in: query
-          description: "If true, return only orphan tasks (requirementId not in requirements.yaml)"
+          description: 'If true, return only orphan tasks (requirementId not in requirements.yaml)'
           schema:
             type: boolean
             default: false
@@ -342,66 +342,66 @@ paths:
             enum: [asc, desc]
             default: asc
       responses:
-        "200":
+        '200':
           description: Tasks list
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Task"
+                  $ref: '#/components/schemas/Task'
               examples:
                 all:
-                  summary: "GET /tasks"
+                  summary: 'GET /tasks'
                   value:
                     - id: TASK-001
                       requirementId: FR-SCAN-001
                       title: Implement YAML parser
                       status: done
                       assignee: alexey
-                      createdAt: "2026-02-10T09:00:00Z"
-                      updatedAt: "2026-02-20T18:00:00Z"
+                      createdAt: '2026-02-10T09:00:00Z'
+                      updatedAt: '2026-02-20T18:00:00Z'
                     - id: TASK-002
                       requirementId: FR-SCAN-002
                       title: Build annotation scanner
                       status: done
                       assignee: alexey
-                      createdAt: "2026-02-12T10:00:00Z"
-                      updatedAt: "2026-02-25T15:00:00Z"
+                      createdAt: '2026-02-12T10:00:00Z'
+                      updatedAt: '2026-02-25T15:00:00Z'
                     - id: TASK-003
                       requirementId: FR-API-001
                       title: Add filtering to requirements endpoint
                       status: in_progress
                       assignee: maria
-                      createdAt: "2026-02-18T09:00:00Z"
-                      updatedAt: "2026-03-01T10:15:00Z"
+                      createdAt: '2026-02-18T09:00:00Z'
+                      updatedAt: '2026-03-01T10:15:00Z'
                     - id: TASK-004
                       requirementId: FR-API-002
                       title: Write tests for requirement detail
                       status: open
-                      createdAt: "2026-02-20T11:00:00Z"
-                      updatedAt: "2026-02-20T11:00:00Z"
+                      createdAt: '2026-02-20T11:00:00Z'
+                      updatedAt: '2026-02-20T11:00:00Z'
                     - id: TASK-005
                       requirementId: AR-PERF-001
                       title: Benchmark scan on large repos
                       status: open
-                      createdAt: "2026-02-22T14:00:00Z"
-                      updatedAt: "2026-02-22T14:00:00Z"
+                      createdAt: '2026-02-22T14:00:00Z'
+                      updatedAt: '2026-02-22T14:00:00Z'
                     - id: TASK-006
                       requirementId: FR-EXPORT-001
                       title: Add CSV export
                       status: open
-                      createdAt: "2026-02-25T10:00:00Z"
-                      updatedAt: "2026-02-25T10:00:00Z"
+                      createdAt: '2026-02-25T10:00:00Z'
+                      updatedAt: '2026-02-25T10:00:00Z'
                 orphans_only:
-                  summary: "GET /tasks?orphans=true"
+                  summary: 'GET /tasks?orphans=true'
                   value:
                     - id: TASK-006
                       requirementId: FR-EXPORT-001
                       title: Add CSV export
                       status: open
-                      createdAt: "2026-02-25T10:00:00Z"
-                      updatedAt: "2026-02-25T10:00:00Z"
+                      createdAt: '2026-02-25T10:00:00Z'
+                      updatedAt: '2026-02-25T10:00:00Z'
 
   /scan:
     post:
@@ -412,30 +412,30 @@ paths:
         Returns immediately with status `scanning`; poll `GET /scan` for completion.
       operationId: triggerScan
       responses:
-        "202":
+        '202':
           description: Scan started
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ScanStatus"
+                $ref: '#/components/schemas/ScanStatus'
               example:
                 status: scanning
-                startedAt: "2026-03-01T10:14:59Z"
+                startedAt: '2026-03-01T10:14:59Z'
     get:
       summary: Current scan status
       description: Returns the state of the most recent scan. Poll this after `POST /scan` to track progress.
       operationId: getScanStatus
       responses:
-        "200":
+        '200':
           description: Scan state
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ScanStatus"
+                $ref: '#/components/schemas/ScanStatus'
               example:
                 status: completed
-                startedAt: "2026-03-01T10:14:59Z"
-                completedAt: "2026-03-01T10:15:00Z"
+                startedAt: '2026-03-01T10:14:59Z'
+                completedAt: '2026-03-01T10:15:00Z'
                 duration: 340
 
 components:
@@ -454,7 +454,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/Error"
+            $ref: '#/components/schemas/Error'
           example:
             error: not_found
             message: "Requirement 'FR-UNKNOWN-999' not found"
@@ -478,74 +478,74 @@ components:
       required: [requirements, annotations, tasks, coverage, lastScanAt]
       properties:
         requirements:
-          $ref: "#/components/schemas/RequirementStats"
+          $ref: '#/components/schemas/RequirementStats'
         annotations:
-          $ref: "#/components/schemas/AnnotationStats"
+          $ref: '#/components/schemas/AnnotationStats'
         tasks:
-          $ref: "#/components/schemas/TaskStats"
+          $ref: '#/components/schemas/TaskStats'
         coverage:
           type: number
           format: float
-          description: "Fully covered / total * 100"
+          description: 'Fully covered / total * 100'
         lastScanAt:
           type: string
           format: date-time
 
     RequirementStats:
       type: object
-      description: "Requirement totals broken down by type and coverage status"
+      description: 'Requirement totals broken down by type and coverage status'
       required: [total, byType, byStatus]
       properties:
         total:
           type: integer
         byType:
           type: object
-          description: "Count per RequirementType (FR, AR)"
+          description: 'Count per RequirementType (FR, AR)'
           additionalProperties:
             type: integer
         byStatus:
           type: object
-          description: "Count per CoverageStatus (covered, partial, missing)"
+          description: 'Count per CoverageStatus (covered, partial, missing)'
           additionalProperties:
             type: integer
 
     AnnotationStats:
       type: object
-      description: "Annotation counts by kind with orphan total"
+      description: 'Annotation counts by kind with orphan total'
       required: [total, impl, test, orphans]
       properties:
         total:
           type: integer
         impl:
           type: integer
-          description: "Annotations in production code"
+          description: 'Annotations in production code'
         test:
           type: integer
-          description: "Annotations in test code"
+          description: 'Annotations in test code'
         orphans:
           type: integer
-          description: "Annotations referencing non-existent requirements"
+          description: 'Annotations referencing non-existent requirements'
 
     TaskStats:
       type: object
-      description: "Task counts by status with orphan total"
+      description: 'Task counts by status with orphan total'
       required: [total, byStatus, orphans]
       properties:
         total:
           type: integer
         byStatus:
           type: object
-          description: "Count per TaskStatus (open, in_progress, done)"
+          description: 'Count per TaskStatus (open, in_progress, done)'
           additionalProperties:
             type: integer
         orphans:
           type: integer
-          description: "Tasks referencing non-existent requirements"
+          description: 'Tasks referencing non-existent requirements'
 
     RequirementType:
       type: string
       enum: [FR, AR]
-      description: "FR = functional, AR = architectural"
+      description: 'FR = functional, AR = architectural'
 
     CoverageStatus:
       type: string
@@ -562,48 +562,48 @@ components:
 
     Requirement:
       type: object
-      description: "A specification item from `requirements.yaml`. ID format: `{TYPE}-{DOMAIN}-{NNN}` (e.g. FR-SCAN-001)."
+      description: 'A specification item from `requirements.yaml`. ID format: `{TYPE}-{DOMAIN}-{NNN}` (e.g. FR-SCAN-001).'
       required: [id, type, title, description, status, createdAt, updatedAt]
       properties:
         id:
           type: string
-          description: "Unique identifier. Pattern: TYPE-DOMAIN-NNN"
+          description: 'Unique identifier. Pattern: TYPE-DOMAIN-NNN'
         type:
-          $ref: "#/components/schemas/RequirementType"
+          $ref: '#/components/schemas/RequirementType'
         title:
           type: string
-          description: "Short human-readable name"
+          description: 'Short human-readable name'
         description:
           type: string
-          description: "Specification statement — a MUST/SHOULD directive that can be verified"
+          description: 'Specification statement — a MUST/SHOULD directive that can be verified'
         status:
-          $ref: "#/components/schemas/CoverageStatus"
+          $ref: '#/components/schemas/CoverageStatus'
         createdAt:
           type: string
           format: date-time
-          description: "When the requirement was first added to requirements.yaml"
+          description: 'When the requirement was first added to requirements.yaml'
         updatedAt:
           type: string
           format: date-time
-          description: "Last modification timestamp"
+          description: 'Last modification timestamp'
 
     RequirementDetail:
-      description: "Requirement with its full traceability chain — all linked annotations and tasks."
+      description: 'Requirement with its full traceability chain — all linked annotations and tasks.'
       allOf:
-        - $ref: "#/components/schemas/Requirement"
+        - $ref: '#/components/schemas/Requirement'
         - type: object
           required: [annotations, tasks]
           properties:
             annotations:
               type: array
-              description: "All `@req` annotations in code that reference this requirement"
+              description: 'All `@req` annotations in code that reference this requirement'
               items:
-                $ref: "#/components/schemas/Annotation"
+                $ref: '#/components/schemas/Annotation'
             tasks:
               type: array
-              description: "All tasks from tasks.yaml that reference this requirement"
+              description: 'All tasks from tasks.yaml that reference this requirement'
               items:
-                $ref: "#/components/schemas/Task"
+                $ref: '#/components/schemas/Task'
 
     AnnotationType:
       type: string
@@ -615,43 +615,43 @@ components:
 
     Annotation:
       type: object
-      description: "A `@req REQUIREMENT_ID` comment found in source code by the scanner."
+      description: 'A `@req REQUIREMENT_ID` comment found in source code by the scanner.'
       required: [file, line, reqId, type, snippet]
       properties:
         file:
           type: string
-          description: "Relative path from repository root"
+          description: 'Relative path from repository root'
         line:
           type: integer
-          description: "Line number where `@req` appears"
+          description: 'Line number where `@req` appears'
         reqId:
           type: string
-          description: "Requirement ID referenced by this annotation. May not exist in requirements.yaml (orphan)."
+          description: 'Requirement ID referenced by this annotation. May not exist in requirements.yaml (orphan).'
         type:
-          $ref: "#/components/schemas/AnnotationType"
+          $ref: '#/components/schemas/AnnotationType'
         snippet:
           type: string
-          description: "2-3 lines of code context around the `@req` comment"
+          description: '2-3 lines of code context around the `@req` comment'
 
     Task:
       type: object
-      description: "A work item from `tasks.yaml` linked to a requirement."
+      description: 'A work item from `tasks.yaml` linked to a requirement.'
       required: [id, requirementId, title, status, createdAt, updatedAt]
       properties:
         id:
           type: string
-          description: "Task identifier (e.g. TASK-001)"
+          description: 'Task identifier (e.g. TASK-001)'
         requirementId:
           type: string
-          description: "Requirement ID this task relates to. May not exist in requirements.yaml (orphan)."
+          description: 'Requirement ID this task relates to. May not exist in requirements.yaml (orphan).'
         title:
           type: string
-          description: "What needs to be done"
+          description: 'What needs to be done'
         status:
-          $ref: "#/components/schemas/TaskStatus"
+          $ref: '#/components/schemas/TaskStatus'
         assignee:
           type: string
-          description: "Person responsible. Omitted if unassigned."
+          description: 'Person responsible. Omitted if unassigned.'
         createdAt:
           type: string
           format: date-time
@@ -674,7 +674,7 @@ components:
           format: date-time
         duration:
           type: integer
-          description: "Scan duration in milliseconds"
+          description: 'Scan duration in milliseconds'
 
     Error:
       type: object

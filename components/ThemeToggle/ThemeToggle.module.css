@@ -9,7 +9,9 @@
   color: var(--foreground);
   font-size: 0.875rem;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 }
 
 .toggle:hover {

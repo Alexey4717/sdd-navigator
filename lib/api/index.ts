@@ -35,7 +35,8 @@ export const listAnnotations = (filters?: AnnotationListFilters) =>
   provider.listAnnotations(filters);
 
 // @req SCD-TASK-001
-export const listTasks = (filters?: TaskListFilters) => provider.listTasks(filters);
+export const listTasks = (filters?: TaskListFilters) =>
+  provider.listTasks(filters);
 
 // @req SCD-API-002
 export const triggerScan = () => provider.triggerScan();

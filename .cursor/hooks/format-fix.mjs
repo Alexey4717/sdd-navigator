@@ -8,7 +8,9 @@ import { readFileSync } from 'node:fs';
 
 let input = '';
 process.stdin.setEncoding('utf8');
-process.stdin.on('data', chunk => { input += chunk; });
+process.stdin.on('data', (chunk) => {
+  input += chunk;
+});
 process.stdin.on('end', () => {
   let filePath = '';
   try {
@@ -24,24 +26,43 @@ process.stdin.on('end', () => {
   if (!existsSync('package.json')) process.exit(0);
 
   const hasTool = (cmd) => {
-    try { execSync(`command -v ${cmd}`, { stdio: 'ignore' }); return true; }
-    catch { return false; }
+    try {
+      execSync(`command -v ${cmd}`, { stdio: 'ignore' });
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   const pnpmAvail = hasTool('pnpm');
 
   if (pnpmAvail) {
     // Try prettier
-    spawnSync('pnpm', ['-s', 'exec', 'prettier', '--write', '--ignore-unknown', filePath], {
-      stdio: 'ignore',
-      timeout: 15000,
-    });
-    // Try eslint --fix (only on .ts/.tsx/.js/.jsx)
-    if (/\.(tsx?|jsx?)$/.test(filePath)) {
-      spawnSync('pnpm', ['-s', 'exec', 'eslint', '--fix', '--no-error-on-unmatched-pattern', filePath], {
+    spawnSync(
+      'pnpm',
+      ['-s', 'exec', 'prettier', '--write', '--ignore-unknown', filePath],
+      {
         stdio: 'ignore',
         timeout: 15000,
-      });
+      },
+    );
+    // Try eslint --fix (only on .ts/.tsx/.js/.jsx)
+    if (/\.(tsx?|jsx?)$/.test(filePath)) {
+      spawnSync(
+        'pnpm',
+        [
+          '-s',
+          'exec',
+          'eslint',
+          '--fix',
+          '--no-error-on-unmatched-pattern',
+          filePath,
+        ],
+        {
+          stdio: 'ignore',
+          timeout: 15000,
+        },
+      );
     }
   }
 

@@ -13,7 +13,9 @@
     "test:watch": "vitest",
     "gen:types": "openapi-typescript spec/sdd-coverage-api.yaml -o lib/api/schema.d.ts",
     "check-coverage": "tsx scripts/check-coverage.ts",
-    "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm check-coverage && pnpm build"
+    "format": "prettier --write .",
+    "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm check-coverage && pnpm build",
+    "prepare": "husky"
   },
   "dependencies": {
     "next": "16.2.1",
@@ -30,12 +32,21 @@
     "@vitejs/plugin-react": "^6.0.3",
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
+    "husky": "^9.1.7",
     "jsdom": "^29.1.1",
+    "lint-staged": "^17.0.8",
     "openapi-typescript": "^7.13.0",
     "prettier": "^3.8.5",
     "tsx": "^4.22.4",
     "typescript": "^5",
     "vitest": "^4.1.9",
     "yaml": "^2.9.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "prettier --write",
+      "eslint --fix --no-error-on-unmatched-pattern"
+    ],
+    "*.{json,css,md,yml,yaml}": "prettier --write"
   }
 }

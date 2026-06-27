@@ -43,8 +43,23 @@ export const StatusBreakdown = ({
 }: StatusBreakdownProps) => (
   <div className={styles.block}>
     <h3 className={styles.heading}>By status</h3>
-    <StatusBar label="Covered" count={covered} total={total} cssVar="--status-covered" />
-    <StatusBar label="Partial" count={partial} total={total} cssVar="--status-partial" />
-    <StatusBar label="Missing" count={missing} total={total} cssVar="--status-missing" />
+    <StatusBar
+      label="Covered"
+      count={covered}
+      total={total}
+      cssVar="--status-covered"
+    />
+    <StatusBar
+      label="Partial"
+      count={partial}
+      total={total}
+      cssVar="--status-partial"
+    />
+    <StatusBar
+      label="Missing"
+      count={missing}
+      total={total}
+      cssVar="--status-missing"
+    />
   </div>
 );

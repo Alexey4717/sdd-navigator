@@ -8,7 +8,9 @@ import { existsSync } from 'node:fs';
 
 let input = '';
 process.stdin.setEncoding('utf8');
-process.stdin.on('data', chunk => { input += chunk; });
+process.stdin.on('data', (chunk) => {
+  input += chunk;
+});
 process.stdin.on('end', () => {
   // Fail open: project not scaffolded yet
   if (!existsSync('package.json')) {
@@ -17,8 +19,12 @@ process.stdin.on('end', () => {
 
   // Fail open: pnpm not available
   const hasPnpm = (() => {
-    try { execSync('pnpm --version', { stdio: 'ignore' }); return true; }
-    catch { return false; }
+    try {
+      execSync('pnpm --version', { stdio: 'ignore' });
+      return true;
+    } catch {
+      return false;
+    }
   })();
   if (!hasPnpm) {
     process.exit(0);
@@ -39,15 +45,18 @@ process.stdin.on('end', () => {
     timeout: 30000,
   });
   if (cc.status !== 0) {
-    issues.push('Coverage check failures:\n' + (cc.stdout || '') + (cc.stderr || ''));
+    issues.push(
+      'Coverage check failures:\n' + (cc.stdout || '') + (cc.stderr || ''),
+    );
   }
 
   if (issues.length > 0) {
     const report = issues.join('\n\n---\n\n');
-    console.log(JSON.stringify({
-      followup_message:
-        `Gate hook found issues that must be fixed before finishing:\n\n${report}\n\nPlease fix the above and re-verify.`,
-    }));
+    console.log(
+      JSON.stringify({
+        followup_message: `Gate hook found issues that must be fixed before finishing:\n\n${report}\n\nPlease fix the above and re-verify.`,
+      }),
+    );
   }
 
   process.exit(0);

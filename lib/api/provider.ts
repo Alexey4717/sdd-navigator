@@ -35,9 +35,13 @@ export interface TaskListFilters extends TaskFilter {
 // @req SCD-API-002
 export interface DataProvider {
   getStats(): Promise<Result<Stats>>;
-  listRequirements(filters?: RequirementListFilters): Promise<Result<Requirement[]>>;
+  listRequirements(
+    filters?: RequirementListFilters,
+  ): Promise<Result<Requirement[]>>;
   getRequirement(id: string): Promise<Result<RequirementDetail>>;
-  listAnnotations(filters?: AnnotationListFilters): Promise<Result<Annotation[]>>;
+  listAnnotations(
+    filters?: AnnotationListFilters,
+  ): Promise<Result<Annotation[]>>;
   listTasks(filters?: TaskListFilters): Promise<Result<Task[]>>;
   triggerScan(): Promise<Result<ScanStatus>>;
   getScanStatus(): Promise<Result<ScanStatus>>;

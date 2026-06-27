@@ -34,7 +34,11 @@ export const SummaryPanel = ({ stats }: SummaryPanelProps) => {
         <h2 id="summary-heading" className={styles.heading}>
           Coverage Summary
         </h2>
-        <time className={styles.scanAt} dateTime={lastScanAt} title="Last scan timestamp">
+        <time
+          className={styles.scanAt}
+          dateTime={lastScanAt}
+          title="Last scan timestamp"
+        >
           Last scan: {formatDate(lastScanAt)}
         </time>
       </header>
@@ -48,7 +52,12 @@ export const SummaryPanel = ({ stats }: SummaryPanelProps) => {
         <StatCard label="Annotations" value={annotations.total} />
       </dl>
 
-      <StatusBreakdown total={total} covered={covered} partial={partial} missing={missing} />
+      <StatusBreakdown
+        total={total}
+        covered={covered}
+        partial={partial}
+        missing={missing}
+      />
 
       <OrphanWarning
         annotationOrphans={annotations.orphans}

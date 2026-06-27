@@ -4,7 +4,9 @@
  */
 let input = '';
 process.stdin.setEncoding('utf8');
-process.stdin.on('data', chunk => { input += chunk; });
+process.stdin.on('data', (chunk) => {
+  input += chunk;
+});
 process.stdin.on('end', () => {
   let command = '';
   try {
@@ -18,7 +20,7 @@ process.stdin.on('end', () => {
 
   // Secret / config file patterns the user forbids reading
   const secretPatterns = [
-    /(?:^|[\s"'`])\.env(?:\s|$|["'`])/,  // .env (standalone)
+    /(?:^|[\s"'`])\.env(?:\s|$|["'`])/, // .env (standalone)
     /(?:^|[\s"'`])dev\.env(?:\s|$|["'`])/, // dev.env
     /(?:^|[\s"'`])config\.json(?:\s|$|["'`])/, // config.json
     /\w+\.example\.\w+/, // *.example.*
@@ -34,22 +36,28 @@ process.stdin.on('end', () => {
 
   for (const pattern of secretPatterns) {
     if (pattern.test(command)) {
-      console.log(JSON.stringify({
-        permission: 'ask',
-        user_message: `Command references a protected file (${command.match(pattern)?.[0]}). Review before proceeding.`,
-        agent_message: 'Hook guard: command reads a secret/config file that is off-limits per project rules.',
-      }));
+      console.log(
+        JSON.stringify({
+          permission: 'ask',
+          user_message: `Command references a protected file (${command.match(pattern)?.[0]}). Review before proceeding.`,
+          agent_message:
+            'Hook guard: command reads a secret/config file that is off-limits per project rules.',
+        }),
+      );
       process.exit(0);
     }
   }
 
   for (const pattern of destructiveGit) {
     if (pattern.test(command)) {
-      console.log(JSON.stringify({
-        permission: 'ask',
-        user_message: `Destructive git command detected: "${command}". Confirm before executing.`,
-        agent_message: 'Hook guard: destructive git operation requires explicit user approval.',
-      }));
+      console.log(
+        JSON.stringify({
+          permission: 'ask',
+          user_message: `Destructive git command detected: "${command}". Confirm before executing.`,
+          agent_message:
+            'Hook guard: destructive git operation requires explicit user approval.',
+        }),
+      );
       process.exit(0);
     }
   }

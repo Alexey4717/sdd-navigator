@@ -42,7 +42,10 @@ async function readRaw(dir: string, file: string): Promise<Result<string>> {
   return ok(raw);
 }
 
-async function readJsonArray<T>(dir: string, file: string): Promise<Result<T[]>> {
+async function readJsonArray<T>(
+  dir: string,
+  file: string,
+): Promise<Result<T[]>> {
   const rawRes = await readRaw(dir, file);
   if (!rawRes.ok) return rawRes;
   let parsed: unknown;
@@ -51,11 +54,15 @@ async function readJsonArray<T>(dir: string, file: string): Promise<Result<T[]>>
   } catch (e) {
     return err('malformed', `Invalid JSON in ${file}: ${String(e)}`);
   }
-  if (!Array.isArray(parsed)) return err('malformed', `${file} must be a JSON array`);
+  if (!Array.isArray(parsed))
+    return err('malformed', `${file} must be a JSON array`);
   return ok(parsed as T[]);
 }
 
-async function readJsonObject<T>(dir: string, file: string): Promise<Result<T>> {
+async function readJsonObject<T>(
+  dir: string,
+  file: string,
+): Promise<Result<T>> {
   const rawRes = await readRaw(dir, file);
   if (!rawRes.ok) return rawRes;
   let parsed: unknown;
@@ -71,7 +78,9 @@ async function readJsonObject<T>(dir: string, file: string): Promise<Result<T>> 
 }
 
 // @req SCD-API-002
-export function createMockProvider(dataDir: string = DEFAULT_DATA_DIR): DataProvider {
+export function createMockProvider(
+  dataDir: string = DEFAULT_DATA_DIR,
+): DataProvider {
   return {
     // @req SCD-SUM-001
     async getStats(): Promise<Result<Stats>> {
@@ -79,22 +88,34 @@ export function createMockProvider(dataDir: string = DEFAULT_DATA_DIR): DataProv
     },
 
     // @req SCD-FLT-001
-    async listRequirements(filters: RequirementListFilters = {}): Promise<Result<Requirement[]>> {
-      const res = await readJsonArray<Requirement>(dataDir, 'requirements.json');
+    async listRequirements(
+      filters: RequirementListFilters = {},
+    ): Promise<Result<Requirement[]>> {
+      const res = await readJsonArray<Requirement>(
+        dataDir,
+        'requirements.json',
+      );
       if (!res.ok) return res;
       let reqs = filterRequirements(res.data, filters);
-      if (filters.sort) reqs = sortRequirements(reqs, filters.sort, filters.order ?? 'asc');
+      if (filters.sort)
+        reqs = sortRequirements(reqs, filters.sort, filters.order ?? 'asc');
       return ok(reqs);
     },
 
     // @req SCD-DET-001
     async getRequirement(id: string): Promise<Result<RequirementDetail>> {
-      const reqRes = await readJsonArray<Requirement>(dataDir, 'requirements.json');
+      const reqRes = await readJsonArray<Requirement>(
+        dataDir,
+        'requirements.json',
+      );
       if (!reqRes.ok) return reqRes;
       const req = reqRes.data.find((r) => r.id === id);
       if (!req) return err('not_found', `Requirement '${id}' not found`, 404);
 
-      const annRes = await readJsonArray<Annotation>(dataDir, 'annotations.json');
+      const annRes = await readJsonArray<Annotation>(
+        dataDir,
+        'annotations.json',
+      );
       if (!annRes.ok) return annRes;
       const taskRes = await readJsonArray<Task>(dataDir, 'tasks.json');
       if (!taskRes.ok) return taskRes;
@@ -108,10 +129,18 @@ export function createMockProvider(dataDir: string = DEFAULT_DATA_DIR): DataProv
     },
 
     // @req SCD-ORPH-001
-    async listAnnotations(filters: AnnotationListFilters = {}): Promise<Result<Annotation[]>> {
-      const annRes = await readJsonArray<Annotation>(dataDir, 'annotations.json');
+    async listAnnotations(
+      filters: AnnotationListFilters = {},
+    ): Promise<Result<Annotation[]>> {
+      const annRes = await readJsonArray<Annotation>(
+        dataDir,
+        'annotations.json',
+      );
       if (!annRes.ok) return annRes;
-      const reqRes = await readJsonArray<Requirement>(dataDir, 'requirements.json');
+      const reqRes = await readJsonArray<Requirement>(
+        dataDir,
+        'requirements.json',
+      );
       if (!reqRes.ok) return reqRes;
       return ok(filterAnnotations(annRes.data, reqRes.data, filters));
     },
@@ -120,10 +149,14 @@ export function createMockProvider(dataDir: string = DEFAULT_DATA_DIR): DataProv
     async listTasks(filters: TaskListFilters = {}): Promise<Result<Task[]>> {
       const taskRes = await readJsonArray<Task>(dataDir, 'tasks.json');
       if (!taskRes.ok) return taskRes;
-      const reqRes = await readJsonArray<Requirement>(dataDir, 'requirements.json');
+      const reqRes = await readJsonArray<Requirement>(
+        dataDir,
+        'requirements.json',
+      );
       if (!reqRes.ok) return reqRes;
       let tasks = filterTasks(taskRes.data, reqRes.data, filters);
-      if (filters.sort) tasks = sortTasks(tasks, filters.sort, filters.order ?? 'asc');
+      if (filters.sort)
+        tasks = sortTasks(tasks, filters.sort, filters.order ?? 'asc');
       return ok(tasks);
     },
 
@@ -135,7 +168,9 @@ export function createMockProvider(dataDir: string = DEFAULT_DATA_DIR): DataProv
     // @req SCD-SUM-001
     async getScanStatus(): Promise<Result<ScanStatus>> {
       const statsRes = await readJsonObject<Stats>(dataDir, 'stats.json');
-      const at = statsRes.ok ? statsRes.data.lastScanAt : new Date().toISOString();
+      const at = statsRes.ok
+        ? statsRes.data.lastScanAt
+        : new Date().toISOString();
       return ok({ status: 'completed', startedAt: at, completedAt: at });
     },
   };

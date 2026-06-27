@@ -31,14 +31,36 @@ function parse(data: any) { ... }
 function parse(data: unknown): Result<Stats, ApiError> { ... }
 ```
 
+## Same-layer imports — relative paths only
+
+Within the same top-level layer (`lib/`, `components/`, `app/`), import sibling modules with **relative** paths. Use the `@/` alias only for **cross-layer** imports.
+
+```ts
+// lib/url-filters.ts — same layer → relative
+import type { RequirementType } from './api/types';
+import type { SortKey } from './coverage';
+
+// ❌ BAD — same layer with @/ alias
+import type { RequirementType } from '@/lib/api/types';
+
+// components/RequirementsTable/RequirementsTable.tsx — cross layer → @/
+import type { Requirement } from '@/lib/api/types';
+
+// components/RequirementsTable/RequirementsTable.tsx — same layer → relative
+import { SortableHeader } from './components/SortableHeader/SortableHeader';
+```
+
 ## No Duplicated Types / Logic
 
 ```ts
 // ❌ BAD — redefining a type already in lib/api/types.ts
 type Requirement = { id: string; status: string };
 
-// ✅ GOOD
+// ✅ GOOD — cross layer (e.g. from components/ or app/)
 import type { Requirement } from '@/lib/api/types';
+
+// ✅ GOOD — same layer (e.g. within lib/)
+import type { Requirement } from './api/types';
 ```
 
 ## Commit Format
