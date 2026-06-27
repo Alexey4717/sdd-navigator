@@ -25,7 +25,11 @@ describe('RequirementDetailSkeleton', () => {
     expect(
       screen.getByLabelText('Loading requirement details…'),
     ).toHaveAttribute('aria-busy', 'true');
+    expect(container.querySelector('nav')).toBeInTheDocument();
     expect(container.querySelector('header')).toBeInTheDocument();
     expect(container.querySelectorAll('section')).toHaveLength(2);
+    expect(container.querySelector('ul')).toBeInTheDocument();
+    expect(container.querySelectorAll('li')).toHaveLength(2);
+    expect(container.querySelector('[class*="tableWrap"]')).toBeInTheDocument();
   });
 });
